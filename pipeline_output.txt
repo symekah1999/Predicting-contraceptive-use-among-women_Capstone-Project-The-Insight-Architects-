@@ -1,0 +1,58 @@
+Starting pipeline execution...
+Data cleaning completed. Shape: (32156, 21)
+
+--- Model Training & Cross Validation ---
+Model: Logistic Regression
+  CV ROC-AUC: 0.7962 (+/- 0.0028)
+  Test ROC-AUC: 0.8004
+  Test F1-Macro: 0.7206
+  Test Accuracy: 0.7250
+
+Model: Random Forest
+  CV ROC-AUC: 0.8152 (+/- 0.0027)
+  Test ROC-AUC: 0.8232
+  Test F1-Macro: 0.7314
+  Test Accuracy: 0.7345
+
+Model: XGBoost
+  CV ROC-AUC: 0.8145 (+/- 0.0031)
+  Test ROC-AUC: 0.8219
+  Test F1-Macro: 0.7348
+  Test Accuracy: 0.7424
+
+Model: LightGBM
+  CV ROC-AUC: 0.8192 (+/- 0.0028)
+  Test ROC-AUC: 0.8257
+  Test F1-Macro: 0.7384
+  Test Accuracy: 0.7453
+
+
+--- CV Results Comparison ---
+                      ROC-AUC  ROC-AUC_std  F1-Macro  Accuracy
+Logistic Regression  0.796168     0.002775  0.711780  0.715829
+Random Forest        0.815193     0.002673  0.723536  0.726637
+XGBoost              0.814511     0.003082  0.727168  0.734645
+LightGBM             0.819238     0.002836  0.728987  0.735811
+
+--- Test Set Results Comparison ---
+                     Accuracy   ROC-AUC  F1-Macro  Precision    Recall
+Logistic Regression  0.724969  0.800374  0.720614   0.605016  0.791308
+Random Forest        0.734453  0.823246  0.731397   0.610523  0.827798
+XGBoost              0.742382  0.821877  0.734779   0.634642  0.755638
+LightGBM             0.745336  0.825683  0.738391   0.635993  0.767938
+
+--- Final Model (LightGBM) Evaluation ---
+              precision    recall  f1-score   support
+
+           0       0.84      0.72      0.78      3993
+           1       0.63      0.78      0.70      2439
+
+    accuracy                           0.74      6432
+   macro avg       0.74      0.75      0.74      6432
+weighted avg       0.76      0.74      0.75      6432
+
+Serialized pipeline saved as 'contraceptive_pipeline.joblib'
+
+--- SHAP Explainability ---
+SHAP Summary Plot saved as 'images/shap_summary.png'
+Pipeline run completed successfully.

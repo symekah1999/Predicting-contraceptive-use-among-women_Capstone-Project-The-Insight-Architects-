@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenya Contraceptive Uptake Predictor (KDHS 2022)</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.4);
+            --warning: #f59e0b;
+            --warning-glow: rgba(245, 158, 11, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #090d16 0%, #111827 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            z-index: 2;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .grid-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #818cf8;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        select, input[type="number"], input[type="range"] {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        select:focus, input[type="number"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-glow);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        select option {
+            background: #111827;
+            color: var(--text-main);
+        }
+
+        .range-slider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .range-val {
+            font-weight: 600;
+            color: #818cf8;
+            min-width: 2rem;
+            text-align: right;
+        }
+
+        .submit-btn {
+            grid-column: span 2;
+            width: 100%;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 14px var(--primary-glow);
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+        }
+
+        @media (max-width: 640px) {
+            .submit-btn {
+                grid-column: span 1;
+            }
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .submit-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Result Panel Styling */
+        .result-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            height: 100%;
+        }
+
+        .result-state {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 2.5rem 1rem;
+        }
+
+        .result-state.active {
+            display: flex;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            min-height: 350px;
+            text-align: center;
+            color: var(--text-muted);
+            border: 2px dashed rgba(255, 255, 255, 0.05);
+            border-radius: 18px;
+            padding: 2rem;
+        }
+
+        .result-empty.hidden {
+            display: none;
+        }
+
+        .badge {
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .badge-user {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid var(--success);
+            color: var(--success);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
+        }
+
+        .badge-nonuser {
+            background: rgba(245, 158, 11, 0.15);
+            border: 1px solid var(--warning);
+            color: var(--warning);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+        }
+
+        /* Circular Progress Gauge */
+        .gauge-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 1.5rem;
+        }
+
+        .gauge-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 12;
+        }
+
+        .gauge-bar {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 12;
+            stroke-linecap: round;
+            stroke-dasharray: 440;
+            stroke-dashoffset: 440;
+        }
+
+        .gauge-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .gauge-percentage {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .gauge-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: -2px;
+        }
+
+        .rec-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: left;
+        }
+
+        .rec-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #818cf8;
+            margin-bottom: 0.5rem;
+        }
+
+        .rec-text {
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 2rem 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        footer a {
+            color: #818cf8;
+            text-decoration: none;
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border-left-color: white;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Kenya Contraceptive Uptake Predictor</h1>
+            <p>A machine learning-driven segmentation model targeting family planning interventions based on the 2022 Kenya Demographic and Health Survey.</p>
+        </header>
+
+        <div class="grid-layout">
+            <!-- Left Side Form Card -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span style="font-size: 1.5rem;">📋</span> Respondent Profile Questionnaire
+                </div>
+                <form id="predictor-form">
+                    <div class="form-grid">
+                        <!-- Age -->
+                        <div class="input-group">
+                            <label>Respondent Age (15–49)</label>
+                            <div class="range-slider">
+                                <input type="range" id="age" name="age" min="15" max="49" value="28" oninput="document.getElementById('age-val').innerText = this.value">
+                                <span class="range-val" id="age-val">28</span>
+                            </div>
+                        </div>
+
+                        <!-- Residence type -->
+                        <div class="input-group">
+                            <label>Residence Type</label>
+                            <select id="residence_type" name="residence_type">
+                                <option value="Urban">Urban</option>
+                                <option value="Rural" selected>Rural</option>
+                            </select>
+                        </div>
+
+                        <!-- County -->
+                        <div class="input-group">
+                            <label>County of Residence</label>
+                            <select id="county" name="county">
+                                <option value="Mombasa">Mombasa</option>
+                                <option value="Kwale">Kwale</option>
+                                <option value="Kilifi">Kilifi</option>
+                                <option value="Tana River">Tana River</option>
+                                <option value="Lamu">Lamu</option>
+                                <option value="Taita Taveta">Taita Taveta</option>
+                                <option value="Garissa">Garissa</option>
+                                <option value="Wajir">Wajir</option>
+                                <option value="Mandera">Mandera</option>
+                                <option value="Marsabit">Marsabit</option>
+                                <option value="Isiolo">Isiolo</option>
+                                <option value="Meru">Meru</option>
+                                <option value="Tharaka-Nithi">Tharaka-Nithi</option>
+                                <option value="Embu">Embu</option>
+                                <option value="Kitui">Kitui</option>
+                                <option value="Machakos">Machakos</option>
+                                <option value="Makueni">Makueni</option>
+                                <option value="Nyandarua">Nyandarua</option>
+                                <option value="Nyeri">Nyeri</option>
+                                <option value="Kirinyaga">Kirinyaga</option>
+                                <option value="Murang'a">Murang'a</option>
+                                <option value="Kiambu">Kiambu</option>
+                                <option value="Turkana">Turkana</option>
+                                <option value="West Pokot">West Pokot</option>
+                                <option value="Samburu">Samburu</option>
+                                <option value="Trans Nzoia">Trans Nzoia</option>
+                                <option value="Uasin Gishu">Uasin Gishu</option>
+                                <option value="Elgeyo Marakwet">Elgeyo Marakwet</option>
+                                <option value="Nandi">Nandi</option>
+                                <option value="Baringo">Baringo</option>
+                                <option value="Laikipia">Laikipia</option>
+                                <option value="Nakuru">Nakuru</option>
+                                <option value="Narok">Narok</option>
+                                <option value="Kajiado">Kajiado</option>
+                                <option value="Kericho">Kericho</option>
+                                <option value="Bomet">Bomet</option>
+                                <option value="Kakamega">Kakamega</option>
+                                <option value="Vihiga">Vihiga</option>
+                                <option value="Bungoma">Bungoma</option>
+                                <option value="Busia">Busia</option>
+                                <option value="Siaya">Siaya</option>
+                                <option value="Kisumu">Kisumu</option>
+                                <option value="Homa Bay">Homa Bay</option>
+                                <option value="Migori">Migori</option>
+                                <option value="Kisii">Kisii</option>
+                                <option value="Nyamira">Nyamira</option>
+                                <option value="Nairobi" selected>Nairobi</option>
+                            </select>
+                        </div>
+
+                        <!-- Education Level -->
+                        <div class="input-group">
+                            <label>Education Level</label>
+                            <select id="education_level" name="education_level">
+                                <option value="No education">No education</option>
+                                <option value="Primary">Primary</option>
+                                <option value="Secondary" selected>Secondary</option>
+                                <option value="Higher">Higher</option>
+                            </select>
+                        </div>
+
+                        <!-- Wealth Index -->
+                        <div class="input-group">
+                            <label>Wealth Index</label>
+                            <select id="wealth_index" name="wealth_index">
+                                <option value="Poorest">Poorest</option>
+                                <option value="Poorer">Poorer</option>
+                                <option value="Middle" selected>Middle</option>
+                                <option value="Richer">Richer</option>
+                                <option value="Richest">Richest</option>
+                            </select>
+                        </div>
+
+                        <!-- Marital Status -->
+                        <div class="input-group">
+                            <label>Marital Status</label>
+                            <select id="marital_status" name="marital_status" onchange="togglePartnerEdu()">
+                                <option value="Never married">Never married</option>
+                                <option value="Married" selected>Married</option>
+                                <option value="Living together">Living together</option>
+                                <option value="Widowed">Widowed</option>
+                                <option value="Divorced">Divorced</option>
+                                <option value="Separated">Separated</option>
+                            </select>
+                        </div>
+
+                        <!-- Union Status -->
+                        <div class="input-group">
+                            <label>Union Status</label>
+                            <select id="union_status" name="union_status">
+                                <option value="Never in union">Never in union</option>
+                                <option value="Currently in union" selected>Currently in union</option>
+                                <option value="Formerly in union">Formerly in union</option>
+                            </select>
+                        </div>
+
+                        <!-- Children Ever Born -->
+                        <div class="input-group">
+                            <label>Children Ever Born</label>
+                            <input type="number" id="children_ever_born" name="children_ever_born" min="0" max="15" value="2" onchange="toggleAgeFirstBirth()">
+                        </div>
+
+                        <!-- Living Children -->
+                        <div class="input-group">
+                            <label>Living Children</label>
+                            <input type="number" id="living_children" name="living_children" min="0" max="15" value="2">
+                        </div>
+
+                        <!-- Age at First Birth -->
+                        <div class="input-group" id="afb-group">
+                            <label>Age at First Birth (0 if no children)</label>
+                            <input type="number" id="age_first_birth" name="age_first_birth" min="0" max="49" value="20">
+                        </div>
+
+                        <!-- Pregnancy Loss -->
+                        <div class="input-group">
+                            <label>Experienced Pregnancy Loss?</label>
+                            <select id="pregnancy_loss" name="pregnancy_loss">
+                                <option value="No" selected>No</option>
+                                <option value="Yes">Yes</option>
+                            </select>
+                        </div>
+
+                        <!-- Religion -->
+                        <div class="input-group">
+                            <label>Religion</label>
+                            <select id="religion" name="religion">
+                                <option value="Roman Catholic">Roman Catholic</option>
+                                <option value="Protestant/Other Christian" selected>Protestant/Other Christian</option>
+                                <option value="Evangelical/Born Again">Evangelical/Born Again</option>
+                                <option value="African Instituted Church">African Instituted Church</option>
+                                <option value="Orthodox">Orthodox</option>
+                                <option value="Muslim">Muslim</option>
+                                <option value="Hindu">Hindu</option>
+                                <option value="Traditionalist">Traditionalist</option>
+                                <option value="No religion">No religion</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Household Head Sex -->
+                        <div class="input-group">
+                            <label>Household Head Sex</label>
+                            <select id="household_head_sex" name="household_head_sex">
+                                <option value="Male" selected>Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+
+                        <!-- Partner Education -->
+                        <div class="input-group" id="partner-edu-group">
+                            <label>Partner Education Level</label>
+                            <select id="partner_education" name="partner_education">
+                                <option value="No education">No education</option>
+                                <option value="Primary">Primary</option>
+                                <option value="Secondary" selected>Secondary</option>
+                                <option value="Higher">Higher</option>
+                                <option value="Unknown">Unknown</option>
+                                <option value="No partner">No partner</option>
+                            </select>
+                        </div>
+
+                        <!-- Currently working -->
+                        <div class="input-group">
+                            <label>Currently Employed/Working?</label>
+                            <select id="currently_working" name="currently_working">
+                                <option value="Yes" selected>Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </div>
+
+                        <!-- Household size -->
+                        <div class="input-group">
+                            <label>Household Size</label>
+                            <input type="number" id="household_size" name="household_size" min="1" max="25" value="4">
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="submit-btn" id="submit-btn">
+                            <span id="btn-text">Generate Target Risk Profile</span>
+                            <div class="spinner" id="btn-spinner"></div>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Side Predictions Card -->
+            <div class="glass-card">
+                <div class="section-title">
+                    <span style="font-size: 1.5rem;">📊</span> Analytical Risk Outputs
+                </div>
+
+                <div class="result-panel">
+                    <!-- Empty State -->
+                    <div class="result-empty" id="result-empty">
+                        <span style="font-size: 3rem; margin-bottom: 1rem; filter: grayscale(0.5);">📈</span>
+                        <p>Fill out the respondent's questionnaire and click predict to display the target risk profile and model probabilities.</p>
+                    </div>
+
+                    <!-- Predictions State -->
+                    <div class="result-state" id="result-state">
+                        <div class="badge" id="prediction-badge">Modern Method User</div>
+
+                        <div class="gauge-container">
+                            <svg class="gauge-svg">
+                                <circle class="gauge-bg" cx="80" cy="80" r="70"></circle>
+                                <circle class="gauge-bar" id="gauge-bar" cx="80" cy="80" r="70"></circle>
+                            </svg>
+                            <div class="gauge-text">
+                                <div class="gauge-percentage" id="prob-percentage">0.0%</div>
+                                <div class="gauge-label">Probability</div>
+                            </div>
+                        </div>
+
+                        <div class="rec-container">
+                            <div class="rec-title">🎯 Targeted Action Recommendation</div>
+                            <div class="rec-text" id="rec-text">Loading recommendations...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>KDHS 2022 Contraceptive Uptake Analytics Dashboard  ·  Designed by <a href="#">The Insight Architects</a></p>
+        </footer>
+    </div>
+
+    <script>
+        function togglePartnerEdu() {
+            const marital = document.getElementById('marital_status').value;
+            const partnerEdu = document.getElementById('partner_education');
+            if (marital === 'Never married' || marital === 'Widowed' || marital === 'Divorced' || marital === 'Separated') {
+                partnerEdu.value = 'No partner';
+            } else if (partnerEdu.value === 'No partner') {
+                partnerEdu.value = 'Secondary';
+            }
+        }
+
+        function toggleAgeFirstBirth() {
+            const children = parseInt(document.getElementById('children_ever_born').value);
+            const afbInput = document.getElementById('age_first_birth');
+            if (children === 0) {
+                afbInput.value = 0;
+                afbInput.disabled = true;
+            } else {
+                afbInput.disabled = false;
+                if (afbInput.value === '0') {
+                    afbInput.value = 20;
+                }
+            }
+        }
+
+        document.getElementById('predictor-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading spinner
+            document.getElementById('btn-text').style.display = 'none';
+            document.getElementById('btn-spinner').style.display = 'block';
+            document.getElementById('submit-btn').disabled = true;
+            
+            // Get form values
+            const formData = new FormData(this);
+            
+            // Make prediction request
+            fetch('/predict', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                // Restore button
+                document.getElementById('btn-text').style.display = 'block';
+                document.getElementById('btn-spinner').style.display = 'none';
+                document.getElementById('submit-btn').disabled = false;
+                
+                if (data.status === 'success') {
+                    // Hide empty state, show result
+                    document.getElementById('result-empty').classList.add('hidden');
+                    document.getElementById('result-state').classList.add('active');
+                    
+                    // Set probability text
+                    document.getElementById('prob-percentage').innerText = data.probability + '%';
+                    
+                    // Configure badge and recommendations
+                    const badge = document.getElementById('prediction-badge');
+                    const recText = document.getElementById('rec-text');
+                    const prob = data.probability;
+                    const county = document.getElementById('county').value;
+                    const edu = document.getElementById('education_level').value;
+                    
+                    // Set badge class
+                    if (prob >= 50.0) {
+                        badge.innerText = "Modern Method User";
+                        badge.className = "badge badge-user";
+                    } else {
+                        badge.innerText = "Non-user / Traditional";
+                        badge.className = "badge badge-nonuser";
+                    }
+                    
+                    // Calculate gauge circular offset (dasharray is 440)
+                    const offset = 440 - (440 * prob / 100);
+                    const gaugeBar = document.getElementById('gauge-bar');
+                    gaugeBar.style.strokeDashoffset = offset;
+                    
+                    // Set gauge color based on classification
+                    if (prob >= 50.0) {
+                        gaugeBar.style.stroke = '#10b981'; // Green
+                    } else if (prob >= 30.0) {
+                        gaugeBar.style.stroke = '#6366f1'; // Indigo
+                    } else {
+                        gaugeBar.style.stroke = '#f59e0b'; // Amber
+                    }
+                    
+                    // Custom recommendation text based on regional and individual factors
+                    let recommendation = "";
+                    if (county === 'Mandera' || county === 'Wajir' || county === 'Garissa' || county === 'Turkana') {
+                        recommendation += `<strong>Geographic Intervention Required:</strong> Selected county (${county}) has a highly severe cultural/access contraceptive gap (>80% non-use rate). Deploy Community Health Promoters (CHPs) for direct mobile outreach and address local religious/cultural myths.<br><br>`;
+                    }
+                    
+                    if (edu === 'No education' || edu === 'Primary') {
+                        recommendation += `<strong>Educational Barriers Spotted:</strong> Selected education level (${edu}) is a major driver of non-use. Recommend integrating reproductive health lessons in adult education programs and village meetings.<br><br>`;
+                    }
+                    
+                    if (prob < 50.0) {
+                        recommendation += `<strong>Access Priority:</strong> Predicted uptake is low (${prob}%). Distribute free modern methods (e.g. implants/injectables) via local clinics and support economic empowerment initiatives for this profile.`;
+                    } else {
+                        recommendation += `<strong>Retention Priority:</strong> Uptake is predicted high (${prob}%). Maintain availability of diverse methods (method mix) at local health centers to ensure continuous use and prevent discontinuation.`;
+                    }
+                    
+                    recText.innerHTML = recommendation;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(err => {
+                document.getElementById('btn-text').style.display = 'block';
+                document.getElementById('btn-spinner').style.display = 'none';
+                document.getElementById('submit-btn').disabled = false;
+                alert('Connection error occurred: ' + err.message);
+            });
+        });
+
+        // Initialize form states
+        toggleAgeFirstBirth();
+        togglePartnerEdu();
+    </script>
+</body>
+</html>
