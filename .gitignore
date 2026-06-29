@@ -1,0 +1,29 @@
+# Large Data Files
+*.csv
+*.xlsx
+*.zip
+*.tar.gz
+*.dta
+
+# Grading & School Documents
+*.docx
+*.pdf
+*.pptx
+
+# Jupyter Checkpoints
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+.virtualenv/
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Local system files
+.DS_Store
+Thumbs.db
+
+# serialized models
+*.joblib
+*.pkl
