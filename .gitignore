@@ -1,0 +1,5 @@
+# Ignore a specific folder (the trailing slash tells Git it's a directory)
+images/
+
+# Ignore a specific large dataset by its exact name
+KDHS_2022_women.csv
