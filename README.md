@@ -1,6 +1,7 @@
 # Predicting Contraceptive Use Among Kenyan Women.
 
-![Header Banner](images/header_banner.png)
+![Project Banner](images/header_banner.png)
+
 
 ## Data Cleaning · EDA · Modelling · SHAP Explainability · Deployment
 ### The Insight Architects Group
