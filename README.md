@@ -1,6 +1,13 @@
-# KDHS 2022 — Contraceptive Use Prediction
+# Predicting Contraceptive Use Among Kenyan Women.
+
+![Header Banner](images/header_banner.png)
+
 ## Data Cleaning · EDA · Modelling · SHAP Explainability · Deployment
 ### The Insight Architects Group
+
+> Kenya's family planning story hides a 56-point gap between counties — from about 1% modern contraceptive use in Mandera to 57% in Embu. Using the 2022 Kenya Demographic and Health Survey (32,156 women), we train a LightGBM model that predicts a woman's contraceptive method type from her sociodemographic profile (Macro-AUC 0.798, ahead of a logistic-regression baseline at 0.764), explain it with SHAP, and ship it as a live REST API so health teams can target outreach where non-use is highest.
+
+
 
 ---
 
@@ -22,6 +29,16 @@
 
 ---
 
+## Key Insights
+
+1. Modern contraceptive use ranges from about 1% in Mandera to 57% in Embu, making county the single strongest signal in the whole dataset.
+2. Wealth behaves like a cliff rather than a slope, jumping from 25% in the poorest quintile to around 41% above it, then staying flat.
+3. Education outweighs wealth, since women with no education stay at roughly 12% modern use regardless of how wealthy they are.
+4. LightGBM was selected for deployment with the best accuracy at 72.4% and the best macro AUC at 0.798 across all five models.
+5. SHAP ranks age and living children as the top drivers, with employment the most actionable lever and arid county a genuine structural barrier even after controlling for wealth, education, and religion.
+
+---
+
 ## The Team — The Insight Architects
 
 | Member | Role |
@@ -37,7 +54,10 @@
 
 ## Table of Contents
 
-1. [Why This Project Exists](#1-why-this-project-exists)
+- [Key Insights](#key-insights)
+1. [Problem Statement](#1-problem-statement)
+   - [Business Understanding](#business-understanding)
+   - [Stakeholders](#stakeholders)
 2. [Dataset Description](#2-dataset-description)
 3. [Repository Structure](#3-repository-structure)
 4. [Environment Setup](#4-environment-setup)
@@ -51,11 +71,12 @@
 12. [Business Recommendations](#12-business-recommendations)
 13. [Deployment — Live API on Render.com](#13-deployment--live-api-on-rendercom)
 14. [Design Decisions and Honest Limitations](#14-design-decisions-and-honest-limitations)
-15. [References](#15-references)
+15. [Conclusion](#15-conclusion)
+16. [References](#16-references)
 
 ---
 
-## 1. Why This Project Exists
+## 1. Problem Statement
 
 Kenya's national family planning statistics tell an encouraging story. Modern contraceptive use among married women has improved significantly over three decades. But national averages hide a reality that aggregate reporting cannot surface: in Mandera, barely 1 in 100 women uses a modern method. In Embu, more than half do. That 56-percentage-point gap between two counties in the same country is not a rounding error — it represents a structural inequality in access, information, and agency.
 
@@ -64,6 +85,19 @@ The problem with how family planning programmes currently operate is that they t
 This project builds a machine learning pipeline that changes that. Using the 2022 Kenya Demographic and Health Survey — the most detailed snapshot of Kenyan women's reproductive health in years — we train a model that predicts which contraceptive method type a woman is currently using based on who she is and where she lives. Then we explain those predictions using SHAP, translate them into recommendations that policy teams can act on, and deploy the model as a live REST API that county health officers can query without writing a line of code.
 
 ---
+## Business Understanding
+
+Kenya has made real progress in family planning over three decades, yet uptake remains deeply uneven across its 47 counties. According to the 2022 Kenya Demographic and Health Survey, modern contraceptive use among married women reached about 57% nationally, but arid and semi-arid counties sit far below that average (KNBS & ICF, 2023). Manual analysis of a large, multi-variable survey is impractical for health planners, so machine learning is used to automatically flag the profiles of women most likely to be non-users. The goal is to move past describing the inequality and toward predicting, explaining, and acting on it.
+
+## Stakeholders
+
+- **Ministry of Health, Division of Reproductive Health** — locate high non-use counties and groups, allocate officers and resources
+- **County Health Management Teams** — build county-specific risk profiles for local outreach
+- **UNFPA Kenya** — direct funding and technical support to the highest-risk segments
+- **USAID Kenya** — evaluate programmes and redirect investment to underserved regions
+- **FP2030** — track predicted non-use over time against family planning targets
+- **Community Health Promoters** — prioritise household visits in high-risk clusters
+
 
 ## 2. Dataset Description
 
@@ -131,8 +165,11 @@ The 53-row Folkloric class is the single most important structural constraint in
 kdhs_project/
 │
 ├── KDHS_2022_Capstone.ipynb         ← Main notebook (130 cells, 19 embedded charts)
+├── presentation.pdf                 ← Non-technical stakeholder slides
 ├── KDHS_2022_women.csv              ← Raw dataset — must sit here at runtime
 ├── README.md                        ← This file
+├── images/
+│   └── header.png                   ← README header banner
 │
 └── deployment/                      ← Standalone production API
     ├── app.py                       ← Flask REST API
@@ -148,6 +185,12 @@ kdhs_project/
 ```
 
 > `contraceptive_model_bundle.joblib` is generated at the end of Section 15 when the notebook runs end-to-end. If you only want to run the API without retraining, the pre-built bundle is available in the deployment package.
+
+**Quick links:**
+- Final notebook → [`KDHS_2022_Capstone.ipynb`](KDHS_2022_Capstone.ipynb)
+- Stakeholder presentation → [`presentation.pdf`](presentation.pdf)
+- Live API → [kdhs-contraceptive-api.onrender.com](https://kdhs-contraceptive-api.onrender.com)
+- Reproduction steps → [Section 4 (Environment Setup)](#4-environment-setup) and [Section 5 (How to Run the Notebook)](#5-how-to-run-the-notebook)
 
 ---
 
@@ -644,7 +687,15 @@ The same `engineer_features(record)` function is used at training time (in the n
 
 ---
 
-## 15. References
+## 15. Conclusion
+
+The model works best as a **binary Modern-vs-non-use risk flag**, not a four-class method-type predictor — that is where it is reliable (Modern AUC 0.823, No-method AUC 0.834) and where the public-health decision actually lives. In practice we recommend it powers a Community Health Promoter household-visit prioritisation dashboard: a short community-screening form supplies the sociodemographic inputs, the API returns a `risk_flag`, and CHPs receive a prioritised visit list before they leave the health facility.
+
+The strongest signal in the whole project is not a model output but a fact in the raw data — the 56-point county gap — so geographic targeting of the arid and semi-arid counties (Mandera, Wajir, Garissa, Marsabit, Tana River) should come first, with employment-linked programming and Poorest-quintile commodity support as the next most actionable levers surfaced by SHAP. Two cautions travel with every deployment: the Folkloric and Traditional classes cannot be predicted reliably (a data limitation, not a tuning one), and high non-use risk must always be read alongside union status, since young, never-married, childless women register as "non-users" largely because they are not exposed to pregnancy risk rather than because they face an access barrier. All recommendations are evidence-informed hypotheses drawn from a cross-sectional survey, not proven causal interventions.
+
+---
+
+## 16. References
 
 - **KNBS & ICF.** (2023). *Kenya Demographic and Health Survey 2022.* Nairobi & Rockville: KNBS and ICF.
 - **The DHS Program.** (2022). *DHS-7 Recode Manual: Individual Recode.* ICF International. [dhsprogram.com](https://dhsprogram.com)
