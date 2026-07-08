@@ -10,6 +10,10 @@
 *.pdf
 *.pptx
 
+# Exception: allow presentation files
+!Predicting_Contraceptive_Use_Presentation.pdf
+!Predicting_Contraceptive_Use_Presentation_Updated.pptx
+
 # Jupyter Checkpoints
 .ipynb_checkpoints/
 *.ipynb_checkpoints/
