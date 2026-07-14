@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KDHS 2022 — Contraceptive Use Risk Tool</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #F1F5F9;
+      color: #1E293B;
+      min-height: 100vh;
+      padding: 32px 16px;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; }
+
+    header {
+      background: #0B1F4B;
+      color: white;
+      padding: 28px 32px;
+      border-radius: 12px 12px 0 0;
+    }
+    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.3px; }
+    header p  { margin-top: 6px; font-size: 0.9rem; color: #94A3B8; }
+
+    form {
+      background: white;
+      padding: 28px 32px;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #64748B;
+      margin: 24px 0 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #E2E8F0;
+    }
+    .section-label:first-of-type { margin-top: 0; }
+
+    .row { display: flex; gap: 16px; }
+    .row > .field { flex: 1; }
+    .field { margin-bottom: 14px; }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 5px;
+    }
+
+    input[type="number"],
+    input[type="password"],
+    select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 7px;
+      font-size: 0.92rem;
+      color: #1E293B;
+      background: #FAFAFA;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      appearance: none;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #0D9488;
+      box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+      background: white;
+    }
+
+    .api-note {
+      font-size: 0.78rem;
+      color: #94A3B8;
+      margin-top: -10px;
+      margin-bottom: 14px;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 13px;
+      background: #0B1F4B;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s;
+    }
+    button[type="submit"]:hover  { background: #0D9488; }
+    button[type="submit"]:active { background: #0F766E; }
+
+    /* ── Result box ── */
+    #result {
+      margin-top: 20px;
+      border-radius: 10px;
+      padding: 20px 24px;
+      display: none;
+      animation: fadeIn 0.25s ease;
+    }
+    #result.risk    { background: #FEF2F2; border: 1.5px solid #FECACA; }
+    #result.safe    { background: #F0FDF4; border: 1.5px solid #BBF7D0; }
+
+    #result .verdict {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    #result.risk  .verdict { color: #DC2626; }
+    #result.safe  .verdict { color: #16A34A; }
+
+    #result .flag-badge {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+    }
+    #result.risk  .flag-badge { background: #FECACA; color: #991B1B; }
+    #result.safe  .flag-badge { background: #BBF7D0; color: #166534; }
+
+    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .prob-item {
+      background: white;
+      border-radius: 7px;
+      padding: 10px 14px;
+      border: 1px solid #E2E8F0;
+    }
+    .prob-item .cls  { font-size: 0.8rem; color: #64748B; font-weight: 600; }
+    .prob-item .pct  { font-size: 1.3rem; font-weight: 700; color: #0B1F4B; }
+
+    .prob-bar-wrap { background: #E2E8F0; border-radius: 4px; height: 6px; margin-top: 6px; }
+    .prob-bar      { height: 6px; border-radius: 4px; background: #0D9488; }
+
+    /* ── Error box ── */
+    #error-box {
+      display: none;
+      margin-top: 16px;
+      background: #FEF2F2;
+      border: 1.5px solid #FECACA;
+      border-radius: 8px;
+      padding: 14px 18px;
+      color: #DC2626;
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+  </style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>KDHS 2022 — Contraceptive Use Risk Tool</h1>
+    <p>Enter a respondent profile to get the model's prediction. Uses the trained LightGBM pipeline.</p>
+  </header>
+
+  <form id="form">
+
+    <p class="section-label">Authentication</p>
+    <div class="field">
+      <label for="api_key">API Key</label>
+      <input type="password" id="api_key" placeholder="Paste your API key here" required>
+      <p class="api-note">Stored only in this browser tab — never sent anywhere except this server.</p>
+    </div>
+
+    <p class="section-label">Demographics</p>
+    <div class="row">
+      <div class="field">
+        <label for="age">Age</label>
+        <input type="number" id="age" min="15" max="49" value="28" required>
+      </div>
+      <div class="field">
+        <label for="age_group">Age Group</label>
+        <select id="age_group">
+          <option>15-19</option><option>20-24</option>
+          <option selected>25-29</option><option>30-34</option>
+          <option>35-39</option><option>40-44</option><option>45-49</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="county">County</label>
+        <select id="county"></select>
+      </div>
+      <div class="field">
+        <label for="residence_type">Residence Type</label>
+        <select id="residence_type">
+          <option>Urban</option><option selected>Rural</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="religion">Religion</label>
+        <select id="religion">
+          <option selected>Roman Catholic</option>
+          <option>Protestant/Other Christian</option>
+          <option>Evangelical/Born Again</option>
+          <option>African Instituted Church</option>
+          <option>Orthodox</option><option>Muslim</option>
+          <option>Hindu</option><option>Traditionalist</option>
+          <option>No religion</option><option>Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="household_head_sex">Household Head Sex</label>
+        <select id="household_head_sex">
+          <option selected>Male</option><option>Female</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="section-label">Socioeconomic Status</p>
+    <div class="row">
+      <div class="field">
+        <label for="education_level">Education Level</label>
+        <select id="education_level">
+          <option>No education</option><option selected>Primary</option>
+          <option>Secondary</option><option>Higher</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="wealth_index">Wealth Index</label>
+        <select id="wealth_index">
+          <option selected>Poorest</option><option>Poorer</option>
+          <option>Middle</option><option>Richer</option><option>Richest</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <label for="partner_education">Partner Education</label>
+        <select id="partner_education">
+          <option>No partner</option><option>No education</option>
+          <option selected>Primary</option><option>Secondary</option>
+          <option>Higher</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="currently_working">Currently Working</label>
+        <select id="currently_working">
+          <option>Yes</option><option selected>No</option>
+        </select>
+      </div>
+    </div>
+
+    <p class="section-label">Household & Fertility</p>
+    <div class="row">
+      <div class="field">
+        <label for="household_size">Household Size</label>
+        <input type="number" id="household_size" min="1" max="50" value="6" required>
+      </div>
+      <div class="field">
+        <label for="children_ever_born">Children Ever Born</label>
+        <input type="number" id="children_ever_born" min="0" value="3" required>
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="living_children">Living Children</label>
+        <input type="number" id="living_children" min="0" value="3" required>
+      </div>
+      <div class="field">
+        <label for="age_first_birth">Age at First Birth (0 if none)</label>
+        <input type="number" id="age_first_birth" min="0" max="49" value="19" required>
+      </div>
+    </div>
+
+    <p class="section-label">Marital & Union Status</p>
+    <div class="row">
+      <div class="field">
+        <label for="marital_status">Marital Status</label>
+        <select id="marital_status">
+          <option>Never married</option><option selected>Married</option>
+          <option>Living together</option><option>Widowed</option>
+          <option>Divorced</option><option>Separated</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="union_status">Union Status</label>
+        <select id="union_status">
+          <option>Never in union</option>
+          <option selected>Currently in union</option>
+          <option>Formerly in union</option>
+        </select>
+      </div>
+    </div>
+    <div class="field">
+      <label for="pregnancy_loss">Ever Had a Pregnancy Loss</label>
+      <select id="pregnancy_loss">
+        <option selected>No</option><option>Yes</option>
+      </select>
+    </div>
+
+    <button type="submit">Get Prediction</button>
+  </form>
+
+  <div id="result"></div>
+  <div id="error-box"></div>
+</div>
+
+<script>
+  // Populate county dropdown
+  const counties = [
+    "Mombasa","Kwale","Kilifi","Tana River","Lamu","Taita Taveta",
+    "Garissa","Wajir","Mandera","Marsabit","Isiolo","Meru","Tharaka-Nithi",
+    "Embu","Kitui","Machakos","Makueni","Nyandarua","Nyeri","Kirinyaga",
+    "Murang'a","Kiambu","Turkana","West Pokot","Samburu","Trans Nzoia",
+    "Uasin Gishu","Elgeyo Marakwet","Nandi","Baringo","Laikipia","Nakuru",
+    "Narok","Kajiado","Kericho","Bomet","Kakamega","Vihiga","Bungoma",
+    "Busia","Siaya","Kisumu","Homa Bay","Migori","Kisii","Nyamira","Nairobi"
+  ];
+  const sel = document.getElementById('county');
+  counties.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c; o.textContent = c;
+    if (c === 'Turkana') o.selected = true;
+    sel.appendChild(o);
+  });
+
+  document.getElementById('form').addEventListener('submit', async e => {
+    e.preventDefault();
+    const resultBox = document.getElementById('result');
+    const errorBox  = document.getElementById('error-box');
+    resultBox.style.display = 'none';
+    errorBox.style.display  = 'none';
+
+    const g = id => document.getElementById(id).value;
+
+    const payload = {
+      age:               Number(g('age')),
+      age_group:         g('age_group'),
+      county:            g('county'),
+      residence_type:    g('residence_type'),
+      education_level:   g('education_level'),
+      religion:          g('religion'),
+      household_size:    Number(g('household_size')),
+      household_head_sex: g('household_head_sex'),
+      wealth_index:      g('wealth_index'),
+      children_ever_born: Number(g('children_ever_born')),
+      age_first_birth:   Number(g('age_first_birth')),
+      living_children:   Number(g('living_children')),
+      pregnancy_loss:    g('pregnancy_loss'),
+      marital_status:    g('marital_status'),
+      union_status:      g('union_status'),
+      partner_education: g('partner_education'),
+      currently_working: g('currently_working'),
+    };
+
+    try {
+      const resp = await fetch('/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': g('api_key'),
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await resp.json();
+
+      if (!resp.ok) {
+        errorBox.textContent = 'Error: ' + (data.error || ('HTTP ' + resp.status));
+        errorBox.style.display = 'block';
+        return;
+      }
+
+      const isRisk = data.risk_flag === 'non_use_risk';
+      resultBox.className = isRisk ? 'risk' : 'safe';
+
+      const sorted = Object.entries(data.probabilities)
+        .sort((a, b) => b[1] - a[1]);
+
+      resultBox.innerHTML = `
+        <div class="verdict">Prediction: ${data.prediction}</div>
+        <span class="flag-badge">${isRisk ? '⚠ Non-use Risk' : '✓ Using a Method'}</span>
+        <div class="prob-grid">
+          ${sorted.map(([cls, p]) => `
+            <div class="prob-item">
+              <div class="cls">${cls}</div>
+              <div class="pct">${(p * 100).toFixed(1)}%</div>
+              <div class="prob-bar-wrap">
+                <div class="prob-bar" style="width:${(p*100).toFixed(1)}%"></div>
+              </div>
+            </div>`).join('')}
+        </div>`;
+      resultBox.style.display = 'block';
+
+    } catch (err) {
+      errorBox.textContent = 'Network error: ' + err.message;
+      errorBox.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>

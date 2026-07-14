@@ -1,0 +1,19 @@
+{
+  "age": 28,
+  "age_group": "25-29",
+  "county": "Turkana",
+  "residence_type": "Rural",
+  "education_level": "Primary",
+  "religion": "Roman Catholic",
+  "household_size": 6,
+  "household_head_sex": "Male",
+  "wealth_index": "Poorest",
+  "children_ever_born": 3,
+  "age_first_birth": 19,
+  "living_children": 3,
+  "pregnancy_loss": "No",
+  "marital_status": "Married",
+  "union_status": "Currently in union",
+  "partner_education": "Primary",
+  "currently_working": "No"
+}

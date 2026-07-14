@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: kdhs-contraceptive-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: API_KEY
+        generateValue: true
+    healthCheckPath: /health
