@@ -3,319 +3,652 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KDHS 2022 — Contraceptive Use Risk Tool</title>
+  <title>Contraceptive Use Predictor · The Insight Architects</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --navy:    #0B1F4B;
+      --navy2:   #0D2560;
+      --teal:    #0D9488;
+      --teal2:   #0F766E;
+      --tealL:   #CCFBF1;
+      --tealXL:  #F0FDFA;
+      --red:     #DC2626;
+      --redL:    #FEF2F2;
+      --green:   #059669;
+      --greenL:  #ECFDF5;
+      --gold:    #D97706;
+      --goldL:   #FFFBEB;
+      --slate:   #475569;
+      --slateL:  #94A3B8;
+      --border:  #E2E8F0;
+      --bg:      #F8FAFC;
+      --white:   #FFFFFF;
+      --dark:    #0F172A;
+      --mid:     #1E293B;
+    }
+
     body {
-      font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: #F1F5F9;
-      color: #1E293B;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
       min-height: 100vh;
-      padding: 32px 16px;
     }
 
-    .container { max-width: 760px; margin: 0 auto; }
-
-    header {
-      background: #0B1F4B;
-      color: white;
-      padding: 28px 32px;
-      border-radius: 12px 12px 0 0;
+    /* ─── NAV ─────────────────────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      background: var(--navy);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; height: 60px;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.3);
     }
-    header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.3px; }
-    header p  { margin-top: 6px; font-size: 0.9rem; color: #94A3B8; }
-
-    form {
-      background: white;
-      padding: 28px 32px;
-      border-radius: 0 0 12px 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, var(--teal), #06B6D4);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px;
+      color: #fff; letter-spacing: -0.5px;
+      box-shadow: 0 2px 8px rgba(13,148,136,0.4);
     }
-
-    .section-label {
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #64748B;
-      margin: 24px 0 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid #E2E8F0;
-    }
-    .section-label:first-of-type { margin-top: 0; }
-
-    .row { display: flex; gap: 16px; }
-    .row > .field { flex: 1; }
-    .field { margin-bottom: 14px; }
-
-    label {
-      display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #334155;
-      margin-bottom: 5px;
+    .nav-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; color: #fff; }
+    .nav-sub   { font-size: 11px; color: var(--slateL); margin-top: 1px; }
+    .nav-pill {
+      background: rgba(13,148,136,0.15); border: 1px solid rgba(13,148,136,0.35);
+      color: var(--tealL); font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
+      padding: 4px 12px; border-radius: 999px;
     }
 
-    input[type="number"],
-    input[type="password"],
-    select {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1.5px solid #CBD5E1;
-      border-radius: 7px;
-      font-size: 0.92rem;
-      color: #1E293B;
-      background: #FAFAFA;
-      transition: border-color 0.15s, box-shadow 0.15s;
-      appearance: none;
+    /* ─── HERO ────────────────────────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #060E26 0%, var(--navy) 45%, #0A3455 100%);
+      padding: 64px 28px 56px;
+      position: relative; overflow: hidden;
     }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #0D9488;
-      box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
-      background: white;
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 60% 70% at 80% 30%, rgba(13,148,136,0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(6,182,212,0.10) 0%, transparent 55%);
     }
-
-    .api-note {
-      font-size: 0.78rem;
-      color: #94A3B8;
-      margin-top: -10px;
-      margin-bottom: 14px;
+    /* Animated grid lines */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+      background-size: 48px 48px;
     }
-
-    button[type="submit"] {
-      width: 100%;
-      padding: 13px;
-      background: #0B1F4B;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: background 0.15s;
+    .hero-inner {
+      position: relative; z-index: 1;
+      max-width: 900px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
     }
-    button[type="submit"]:hover  { background: #0D9488; }
-    button[type="submit"]:active { background: #0F766E; }
-
-    /* ── Result box ── */
-    #result {
-      margin-top: 20px;
-      border-radius: 10px;
-      padding: 20px 24px;
-      display: none;
-      animation: fadeIn 0.25s ease;
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(13,148,136,0.12); border: 1px solid rgba(13,148,136,0.3);
+      color: var(--tealL); font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 999px;
+      margin-bottom: 18px;
     }
-    #result.risk    { background: #FEF2F2; border: 1.5px solid #FECACA; }
-    #result.safe    { background: #F0FDF4; border: 1.5px solid #BBF7D0; }
-
-    #result .verdict {
-      font-size: 1.15rem;
-      font-weight: 700;
+    .hero-eyebrow span { font-size: 13px; }
+    .hero h1 {
+      font-family: 'Sora', sans-serif; font-weight: 800;
+      font-size: clamp(26px, 3.5vw, 40px); color: #fff;
+      line-height: 1.12; letter-spacing: -0.5px; margin-bottom: 14px;
+    }
+    .hero h1 em { color: #5EEAD4; font-style: normal; }
+    .hero-desc {
+      font-size: 15px; color: #94A3B8; line-height: 1.65; max-width: 520px;
+      margin-bottom: 28px;
+    }
+    .hero-stats {
+      display: flex; gap: 28px; flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-val {
+      font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800;
+      color: #5EEAD4; display: block; line-height: 1;
+    }
+    .stat-lbl {
+      font-size: 10px; color: #64748B; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-top: 4px; display: block;
+    }
+    /* Model badge */
+    .model-badge {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 22px 26px; text-align: center;
+      min-width: 180px; backdrop-filter: blur(8px);
+    }
+    .model-badge-icon {
+      width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 12px;
+      background: linear-gradient(135deg, var(--teal), #0891B2);
+      display: flex; align-items: center; justify-content: center; font-size: 22px;
+      box-shadow: 0 4px 16px rgba(13,148,136,0.35);
+    }
+    .model-badge-name {
+      font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: #fff;
       margin-bottom: 6px;
     }
-    #result.risk  .verdict { color: #DC2626; }
-    #result.safe  .verdict { color: #16A34A; }
-
-    #result .flag-badge {
-      display: inline-block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      padding: 3px 10px;
-      border-radius: 999px;
-      margin-bottom: 14px;
+    .model-badge-auc {
+      font-size: 12px; color: var(--tealL); font-weight: 600;
+      background: rgba(13,148,136,0.15); padding: 3px 10px; border-radius: 999px;
+      display: inline-block; margin-bottom: 8px;
     }
-    #result.risk  .flag-badge { background: #FECACA; color: #991B1B; }
-    #result.safe  .flag-badge { background: #BBF7D0; color: #166534; }
+    .model-badge-label { font-size: 11px; color: #64748B; }
 
-    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    /* ─── MAIN LAYOUT ─────────────────────────────────────────────────── */
+    .main {
+      max-width: 980px; margin: 0 auto;
+      padding: 36px 20px 60px;
+      display: grid; grid-template-columns: 1fr 300px; gap: 24px;
+      align-items: start;
+    }
+
+    /* ─── CARD ────────────────────────────────────────────────────────── */
+    .card {
+      background: var(--white); border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .card-head {
+      background: linear-gradient(135deg, var(--navy), #0D2560);
+      padding: 18px 22px; display: flex; align-items: center; gap: 12px;
+    }
+    .card-head-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: rgba(13,148,136,0.2); border: 1px solid rgba(13,148,136,0.3);
+      display: flex; align-items: center; justify-content: center; font-size: 16px;
+      flex-shrink: 0;
+    }
+    .card-head h2 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: #fff; }
+    .card-head p  { font-size: 12px; color: #94A3B8; margin-top: 2px; }
+    .card-body { padding: 22px; }
+
+    /* ─── SECTION DIVIDERS ────────────────────────────────────────────── */
+    .sect {
+      display: flex; align-items: center; gap: 10px;
+      margin: 20px 0 14px;
+    }
+    .sect span {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--teal); white-space: nowrap;
+    }
+    .sect::before, .sect::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    /* ─── FORM ELEMENTS ───────────────────────────────────────────────── */
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field { margin-bottom: 12px; }
+
+    label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--slate); margin-bottom: 5px;
+    }
+    label .req { color: var(--red); margin-left: 2px; }
+
+    input[type="number"], select {
+      width: 100%; padding: 9px 12px;
+      border: 1.5px solid #CBD5E1; border-radius: 9px;
+      font-size: 13.5px; color: var(--dark); background: #FAFBFC;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      appearance: none; outline: none; font-family: 'Inter', sans-serif;
+    }
+    input[type="number"]:focus, select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+      background: #fff;
+    }
+    .hint { font-size: 11px; color: var(--slateL); margin-top: 3px; }
+
+    /* API key field */
+    .api-wrap { position: relative; }
+    .api-wrap input {
+      padding-right: 44px;
+      font-family: monospace; font-size: 13px;
+      letter-spacing: 0.04em;
+    }
+    .api-toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; color: var(--slateL);
+      font-size: 16px; line-height: 1; padding: 4px;
+    }
+    .api-toggle:hover { color: var(--slate); }
+
+    /* ─── SUBMIT BUTTON ───────────────────────────────────────────────── */
+    .btn {
+      width: 100%; padding: 13px;
+      background: linear-gradient(135deg, var(--navy), var(--navy2));
+      color: #fff; border: none; border-radius: 10px;
+      font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
+      cursor: pointer; margin-top: 4px;
+      transition: all 0.2s; display: flex; align-items: center;
+      justify-content: center; gap: 8px; letter-spacing: 0.02em;
+    }
+    .btn:hover { background: linear-gradient(135deg, var(--navy2), var(--teal2)); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(11,31,75,0.28); }
+    .btn:active { transform: translateY(0); }
+    .btn.loading { opacity: 0.7; cursor: not-allowed; }
+    .spinner {
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── RESULT ──────────────────────────────────────────────────────── */
+    #result {
+      margin-top: 18px; border-radius: 12px;
+      padding: 20px; display: none; animation: slideUp 0.3s ease;
+    }
+    #result.risk  { background: var(--redL);   border: 1.5px solid #FECACA; }
+    #result.safe  { background: var(--greenL); border: 1.5px solid #A7F3D0; }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-top {
+      display: flex; align-items: flex-start;
+      justify-content: space-between; gap: 10px; margin-bottom: 14px;
+    }
+    .result-prediction { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 800; }
+    #result.risk  .result-prediction { color: var(--red); }
+    #result.safe  .result-prediction { color: var(--green); }
+
+    .result-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px;
+    }
+    #result.risk  .result-badge { background: #FEE2E2; color: #991B1B; }
+    #result.safe  .result-badge { background: #D1FAE5; color: #065F46; }
+
+    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
     .prob-item {
-      background: white;
-      border-radius: 7px;
-      padding: 10px 14px;
-      border: 1px solid #E2E8F0;
+      background: #fff; border-radius: 9px;
+      padding: 10px 12px; border: 1px solid var(--border);
     }
-    .prob-item .cls  { font-size: 0.8rem; color: #64748B; font-weight: 600; }
-    .prob-item .pct  { font-size: 1.3rem; font-weight: 700; color: #0B1F4B; }
+    .prob-cls { font-size: 10px; color: var(--slateL); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .prob-pct { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--navy); margin: 2px 0; }
+    .bar-bg  { background: var(--border); border-radius: 4px; height: 4px; }
+    .bar-fg  { height: 4px; border-radius: 4px; background: var(--teal); transition: width 0.6s ease; }
 
-    .prob-bar-wrap { background: #E2E8F0; border-radius: 4px; height: 6px; margin-top: 6px; }
-    .prob-bar      { height: 6px; border-radius: 4px; background: #0D9488; }
-
-    /* ── Error box ── */
-    #error-box {
-      display: none;
-      margin-top: 16px;
-      background: #FEF2F2;
-      border: 1.5px solid #FECACA;
-      border-radius: 8px;
-      padding: 14px 18px;
-      color: #DC2626;
-      font-size: 0.9rem;
+    /* ─── ERROR ───────────────────────────────────────────────────────── */
+    #err-box {
+      margin-top: 14px; background: var(--redL);
+      border: 1.5px solid #FECACA; border-radius: 10px;
+      padding: 12px 16px; color: var(--red); font-size: 13px;
+      display: none; align-items: flex-start; gap: 8px;
     }
 
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; } }
+    /* ─── SIDEBAR ─────────────────────────────────────────────────────── */
+    .sidebar { display: flex; flex-direction: column; gap: 18px; }
+
+    /* Team card */
+    .team-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06); overflow: hidden; }
+    .team-head { background: linear-gradient(135deg, var(--navy), #0D2560); padding: 16px 18px; }
+    .team-head h3 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
+    .team-head p  { font-size: 11px; color: #94A3B8; margin-top: 3px; }
+    .team-body { padding: 16px 18px; }
+
+    .team-logo-wrap { text-align: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .team-logo {
+      width: 60px; height: 60px; margin: 0 auto 10px;
+      background: linear-gradient(135deg, var(--navy), var(--teal));
+      border-radius: 15px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 900; color: #fff;
+      letter-spacing: -2px; box-shadow: 0 4px 16px rgba(11,31,75,0.22);
+    }
+    .team-name { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); }
+    .team-tag  { font-size: 11px; color: var(--slateL); margin-top: 2px; }
+
+    .members-lbl {
+      font-size: 10px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--slateL);
+      margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
+    }
+    .member {
+      display: flex; align-items: center; gap: 10px;
+      padding: 7px 0; border-bottom: 1px solid #F8FAFC;
+    }
+    .member:last-child { border-bottom: none; }
+    .member-av {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; color: #fff;
+    }
+    .member-name { font-size: 12.5px; font-weight: 600; color: var(--dark); }
+    .member-role { font-size: 10.5px; color: var(--slateL); margin-top: 1px; }
+
+    /* Member avatar colours — distinct for each */
+    .av1 { background: linear-gradient(135deg,#7C3AED,#5B21B6); }
+    .av2 { background: linear-gradient(135deg,#0D9488,#0891B2); }
+    .av3 { background: linear-gradient(135deg,#DC2626,#B91C1C); }
+    .av4 { background: linear-gradient(135deg,#D97706,#B45309); }
+    .av5 { background: linear-gradient(135deg,#059669,#047857); }
+    .av6 { background: linear-gradient(135deg,#0B1F4B,#0D2560); }
+
+    /* Model info card */
+    .info-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06); padding: 16px 18px; }
+    .info-card h4 { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #F8FAFC; font-size: 12px; }
+    .info-row:last-child { border-bottom: none; }
+    .info-key  { color: var(--slateL); }
+    .info-val  { font-weight: 700; color: var(--navy); }
+    .info-val.green { color: var(--green); }
+    .info-val.teal  { color: var(--teal); }
+
+    /* AUC highlight */
+    .auc-highlight {
+      margin-top: 12px; background: var(--tealXL); border: 1px solid var(--tealL);
+      border-radius: 10px; padding: 10px 14px; text-align: center;
+    }
+    .auc-num { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; color: var(--teal); display: block; }
+    .auc-lbl { font-size: 10px; color: var(--teal2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+
+    /* ─── FOOTER ──────────────────────────────────────────────────────── */
+    footer {
+      background: var(--navy); padding: 22px 28px; text-align: center;
+    }
+    footer p { color: #475569; font-size: 12px; line-height: 1.75; }
+    footer strong { color: #94A3B8; }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────────────── */
+    @media (max-width: 740px) {
+      .main { grid-template-columns: 1fr; }
+      .hero-inner { grid-template-columns: 1fr; }
+      .model-badge { display: none; }
+      .row { grid-template-columns: 1fr; }
+      .sidebar { order: -1; }
+    }
   </style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <h1>KDHS 2022 — Contraceptive Use Risk Tool</h1>
-    <p>Enter a respondent profile to get the model's prediction. Uses the trained LightGBM pipeline.</p>
-  </header>
 
-  <form id="form">
-
-    <p class="section-label">Authentication</p>
-    <div class="field">
-      <label for="api_key">API Key</label>
-      <input type="password" id="api_key" placeholder="Paste your API key here" required>
-      <p class="api-note">Stored only in this browser tab — never sent anywhere except this server.</p>
+<!-- ── NAV ────────────────────────────────────────────────────────────── -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-logo">IA</div>
+    <div>
+      <div class="nav-title">The Insight Architects</div>
+      <div class="nav-sub">KDHS 2022 · Contraceptive Use Prediction</div>
     </div>
+  </div>
+  <div class="nav-pill">⚡ LightGBM · Live</div>
+</nav>
 
-    <p class="section-label">Demographics</p>
-    <div class="row">
-      <div class="field">
-        <label for="age">Age</label>
-        <input type="number" id="age" min="15" max="49" value="28" required>
-      </div>
-      <div class="field">
-        <label for="age_group">Age Group</label>
-        <select id="age_group">
-          <option>15-19</option><option>20-24</option>
-          <option selected>25-29</option><option>30-34</option>
-          <option>35-39</option><option>40-44</option><option>45-49</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="county">County</label>
-        <select id="county"></select>
-      </div>
-      <div class="field">
-        <label for="residence_type">Residence Type</label>
-        <select id="residence_type">
-          <option>Urban</option><option selected>Rural</option>
-        </select>
+<!-- ── HERO ───────────────────────────────────────────────────────────── -->
+<div class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow"><span>🇰🇪</span> Kenya Demographic &amp; Health Survey 2022</div>
+      <h1>Contraceptive Use<br><em>Risk Prediction</em></h1>
+      <p class="hero-desc">
+        Enter a respondent's sociodemographic profile to receive an AI-powered
+        contraceptive use prediction — trained on 32,156 Kenyan women aged 15–49
+        across all 47 counties.
+      </p>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-val">32,156</span><span class="stat-lbl">Respondents</span></div>
+        <div class="stat"><span class="stat-val">47</span><span class="stat-lbl">Counties</span></div>
+        <div class="stat"><span class="stat-val">72.9%</span><span class="stat-lbl">Accuracy</span></div>
+        <div class="stat"><span class="stat-val">0.804</span><span class="stat-lbl">Macro AUC</span></div>
       </div>
     </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="religion">Religion</label>
-        <select id="religion">
-          <option selected>Roman Catholic</option>
-          <option>Protestant/Other Christian</option>
-          <option>Evangelical/Born Again</option>
-          <option>African Instituted Church</option>
-          <option>Orthodox</option><option>Muslim</option>
-          <option>Hindu</option><option>Traditionalist</option>
-          <option>No religion</option><option>Other</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="household_head_sex">Household Head Sex</label>
-        <select id="household_head_sex">
-          <option selected>Male</option><option>Female</option>
-        </select>
-      </div>
+    <div class="model-badge">
+      <div class="model-badge-icon">⚡</div>
+      <div class="model-badge-name">LightGBM</div>
+      <div class="model-badge-auc">Macro-AUC 0.804</div>
+      <div class="model-badge-label">Optuna-tuned · Selected model<br>5.6 MB · Sub-ms inference</div>
     </div>
-
-    <p class="section-label">Socioeconomic Status</p>
-    <div class="row">
-      <div class="field">
-        <label for="education_level">Education Level</label>
-        <select id="education_level">
-          <option>No education</option><option selected>Primary</option>
-          <option>Secondary</option><option>Higher</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="wealth_index">Wealth Index</label>
-        <select id="wealth_index">
-          <option selected>Poorest</option><option>Poorer</option>
-          <option>Middle</option><option>Richer</option><option>Richest</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="field">
-        <label for="partner_education">Partner Education</label>
-        <select id="partner_education">
-          <option>No partner</option><option>No education</option>
-          <option selected>Primary</option><option>Secondary</option>
-          <option>Higher</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="currently_working">Currently Working</label>
-        <select id="currently_working">
-          <option>Yes</option><option selected>No</option>
-        </select>
-      </div>
-    </div>
-
-    <p class="section-label">Household & Fertility</p>
-    <div class="row">
-      <div class="field">
-        <label for="household_size">Household Size</label>
-        <input type="number" id="household_size" min="1" max="50" value="6" required>
-      </div>
-      <div class="field">
-        <label for="children_ever_born">Children Ever Born</label>
-        <input type="number" id="children_ever_born" min="0" value="3" required>
-      </div>
-    </div>
-    <div class="row">
-      <div class="field">
-        <label for="living_children">Living Children</label>
-        <input type="number" id="living_children" min="0" value="3" required>
-      </div>
-      <div class="field">
-        <label for="age_first_birth">Age at First Birth (0 if none)</label>
-        <input type="number" id="age_first_birth" min="0" max="49" value="19" required>
-      </div>
-    </div>
-
-    <p class="section-label">Marital & Union Status</p>
-    <div class="row">
-      <div class="field">
-        <label for="marital_status">Marital Status</label>
-        <select id="marital_status">
-          <option>Never married</option><option selected>Married</option>
-          <option>Living together</option><option>Widowed</option>
-          <option>Divorced</option><option>Separated</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="union_status">Union Status</label>
-        <select id="union_status">
-          <option>Never in union</option>
-          <option selected>Currently in union</option>
-          <option>Formerly in union</option>
-        </select>
-      </div>
-    </div>
-    <div class="field">
-      <label for="pregnancy_loss">Ever Had a Pregnancy Loss</label>
-      <select id="pregnancy_loss">
-        <option selected>No</option><option>Yes</option>
-      </select>
-    </div>
-
-    <button type="submit">Get Prediction</button>
-  </form>
-
-  <div id="result"></div>
-  <div id="error-box"></div>
+  </div>
 </div>
 
+<!-- ── MAIN ────────────────────────────────────────────────────────────── -->
+<div class="main">
+
+  <!-- FORM -->
+  <div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-icon">🔐</div>
+        <div>
+          <h2>Respondent Prediction Form</h2>
+          <p>Complete all fields and submit to get the model's prediction</p>
+        </div>
+      </div>
+      <div class="card-body">
+        <form id="form" novalidate>
+
+          <!-- Auth -->
+          <div class="sect"><span>Authentication</span></div>
+          <div class="field">
+            <label for="api_key">API Key <span class="req">*</span></label>
+            <div class="api-wrap">
+              <input type="password" id="api_key" placeholder="Enter your API key" required>
+              <button type="button" class="api-toggle" id="toggle-key" title="Show/hide">👁</button>
+            </div>
+            <p class="hint">Transmitted securely — never stored in this browser.</p>
+          </div>
+
+          <!-- Demographics -->
+          <div class="sect"><span>Demographics</span></div>
+          <div class="row">
+            <div class="field">
+              <label for="age">Age <span class="req">*</span></label>
+              <input type="number" id="age" min="15" max="49" value="28" required>
+            </div>
+            <div class="field">
+              <label for="age_group">Age Group <span class="req">*</span></label>
+              <select id="age_group">
+                <option>15-19</option><option>20-24</option>
+                <option selected>25-29</option><option>30-34</option>
+                <option>35-39</option><option>40-44</option><option>45-49</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="county">County <span class="req">*</span></label>
+              <select id="county"></select>
+            </div>
+            <div class="field">
+              <label for="residence_type">Residence <span class="req">*</span></label>
+              <select id="residence_type">
+                <option>Urban</option><option selected>Rural</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="religion">Religion <span class="req">*</span></label>
+              <select id="religion">
+                <option selected>Roman Catholic</option>
+                <option>Protestant/Other Christian</option>
+                <option>Evangelical/Born Again</option>
+                <option>African Instituted Church</option>
+                <option>Orthodox</option><option>Muslim</option>
+                <option>Hindu</option><option>Traditionalist</option>
+                <option>No religion</option><option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="household_head_sex">Household Head <span class="req">*</span></label>
+              <select id="household_head_sex">
+                <option selected>Male</option><option>Female</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Socioeconomic -->
+          <div class="sect"><span>Socioeconomic Status</span></div>
+          <div class="row">
+            <div class="field">
+              <label for="education_level">Education Level <span class="req">*</span></label>
+              <select id="education_level">
+                <option>No education</option><option selected>Primary</option>
+                <option>Secondary</option><option>Higher</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="wealth_index">Wealth Index <span class="req">*</span></label>
+              <select id="wealth_index">
+                <option selected>Poorest</option><option>Poorer</option>
+                <option>Middle</option><option>Richer</option><option>Richest</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="partner_education">Partner Education <span class="req">*</span></label>
+              <select id="partner_education">
+                <option>No partner</option><option>No education</option>
+                <option selected>Primary</option><option>Secondary</option>
+                <option>Higher</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="currently_working">Currently Working <span class="req">*</span></label>
+              <select id="currently_working">
+                <option>Yes</option><option selected>No</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Household & Fertility -->
+          <div class="sect"><span>Household &amp; Fertility</span></div>
+          <div class="row">
+            <div class="field">
+              <label for="household_size">Household Size <span class="req">*</span></label>
+              <input type="number" id="household_size" min="1" max="50" value="6">
+            </div>
+            <div class="field">
+              <label for="children_ever_born">Children Ever Born <span class="req">*</span></label>
+              <input type="number" id="children_ever_born" min="0" value="3">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="living_children">Living Children <span class="req">*</span></label>
+              <input type="number" id="living_children" min="0" value="3">
+            </div>
+            <div class="field">
+              <label for="age_first_birth">Age at First Birth <span class="req">*</span></label>
+              <input type="number" id="age_first_birth" min="0" max="49" value="19">
+              <p class="hint">Enter 0 if no births</p>
+            </div>
+          </div>
+
+          <!-- Marital -->
+          <div class="sect"><span>Marital &amp; Union Status</span></div>
+          <div class="row">
+            <div class="field">
+              <label for="marital_status">Marital Status <span class="req">*</span></label>
+              <select id="marital_status">
+                <option>Never married</option><option selected>Married</option>
+                <option>Living together</option><option>Widowed</option>
+                <option>Divorced</option><option>Separated</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="union_status">Union Status <span class="req">*</span></label>
+              <select id="union_status">
+                <option>Never in union</option>
+                <option selected>Currently in union</option>
+                <option>Formerly in union</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label for="pregnancy_loss">Ever Had a Pregnancy Loss <span class="req">*</span></label>
+            <select id="pregnancy_loss">
+              <option selected>No</option><option>Yes</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn" id="submitBtn">
+            <span id="btnTxt">Get Prediction</span>
+          </button>
+        </form>
+
+        <div id="result"></div>
+        <div id="err-box"><span>⚠</span><span id="err-msg"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- Team -->
+    <div class="team-card">
+      <div class="team-head">
+        <h3>The Insight Architects</h3>
+        <p>KDHS 2022 Capstone Project</p>
+      </div>
+      <div class="team-body">
+        <div class="team-logo-wrap">
+          <div class="team-logo">IA</div>
+          <div class="team-name">The Insight Architects</div>
+          <div class="team-tag">Data Science · Machine Learning · Public Health</div>
+        </div>
+        <div class="members-lbl">Team Members</div>
+        <div class="member"><div class="member-av av1">CS</div><div><div class="member-name">Clare Simiyu</div><div class="member-role">Data Science</div></div></div>
+        <div class="member"><div class="member-av av2">AS</div><div><div class="member-name">Antony Sila</div><div class="member-role">Data Science</div></div></div>
+        <div class="member"><div class="member-av av3">DT</div><div><div class="member-name">David Theuri</div><div class="member-role">Data Science</div></div></div>
+        <div class="member"><div class="member-av av4">SS</div><div><div class="member-name">Shadrack Symekah</div><div class="member-role">Data Science</div></div></div>
+        <div class="member"><div class="member-av av5">JN</div><div><div class="member-name">Joy Nyuguto</div><div class="member-role">Data Science</div></div></div>
+        <div class="member"><div class="member-av av6">MK</div><div><div class="member-name">Martin Kitema</div><div class="member-role">Data Science</div></div></div>
+      </div>
+    </div>
+
+    <!-- Model Info -->
+    <div class="info-card">
+      <h4>⚡ Deployed Model</h4>
+      <div class="auc-highlight">
+        <span class="auc-num">0.804</span>
+        <span class="auc-lbl">Macro-AUC · Best in suite</span>
+      </div>
+      <div style="margin-top:12px">
+        <div class="info-row"><span class="info-key">Algorithm</span><span class="info-val teal">LightGBM</span></div>
+        <div class="info-row"><span class="info-key">Tuning</span><span class="info-val">Optuna TPE · 30 trials</span></div>
+        <div class="info-row"><span class="info-key">Training data</span><span class="info-val">59,820 rows</span></div>
+        <div class="info-row"><span class="info-key">Accuracy</span><span class="info-val">72.9%</span></div>
+        <div class="info-row"><span class="info-key">Bundle size</span><span class="info-val">5.6 MB</span></div>
+        <div class="info-row"><span class="info-key">Status</span><span class="info-val green">● Live</span></div>
+      </div>
+    </div>
+
+    <!-- Classes -->
+    <div class="info-card">
+      <h4>🎯 Prediction Classes</h4>
+      <div class="info-row"><span class="info-key">No method</span><span class="info-val">58.1% of sample</span></div>
+      <div class="info-row"><span class="info-key">Modern</span><span class="info-val">37.9% of sample</span></div>
+      <div class="info-row"><span class="info-key">Traditional</span><span class="info-val">3.8% of sample</span></div>
+      <div class="info-row"><span class="info-key">Folkloric</span><span class="info-val">0.2% of sample</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
+<footer>
+  <p>
+    <strong>The Insight Architects</strong> &nbsp;·&nbsp; KDHS 2022 Contraceptive Use Prediction<br>
+    Clare Simiyu &nbsp;·&nbsp; Antony Sila &nbsp;·&nbsp; David Theuri &nbsp;·&nbsp;
+    Shadrack Symekah &nbsp;·&nbsp; Joy Nyuguto &nbsp;·&nbsp; Martin Kitema
+  </p>
+</footer>
+
 <script>
-  // Populate county dropdown
+  // County dropdown
   const counties = [
     "Mombasa","Kwale","Kilifi","Tana River","Lamu","Taita Taveta",
     "Garissa","Wajir","Mandera","Marsabit","Isiolo","Meru","Tharaka-Nithi",
@@ -333,77 +666,83 @@
     sel.appendChild(o);
   });
 
+  // Show/hide API key
+  document.getElementById('toggle-key').addEventListener('click', () => {
+    const inp = document.getElementById('api_key');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  });
+
+  // Form submit
   document.getElementById('form').addEventListener('submit', async e => {
     e.preventDefault();
-    const resultBox = document.getElementById('result');
-    const errorBox  = document.getElementById('error-box');
-    resultBox.style.display = 'none';
-    errorBox.style.display  = 'none';
+    const btn   = document.getElementById('submitBtn');
+    const btnTxt= document.getElementById('btnTxt');
+    const res   = document.getElementById('result');
+    const errBox= document.getElementById('err-box');
+    const errMsg= document.getElementById('err-msg');
+
+    res.style.display = 'none';
+    errBox.style.display = 'none';
+    btn.classList.add('loading'); btn.disabled = true;
+    btnTxt.innerHTML = '<div class="spinner"></div>&nbsp; Analysing…';
 
     const g = id => document.getElementById(id).value;
-
     const payload = {
-      age:               Number(g('age')),
-      age_group:         g('age_group'),
-      county:            g('county'),
-      residence_type:    g('residence_type'),
-      education_level:   g('education_level'),
-      religion:          g('religion'),
-      household_size:    Number(g('household_size')),
-      household_head_sex: g('household_head_sex'),
-      wealth_index:      g('wealth_index'),
-      children_ever_born: Number(g('children_ever_born')),
-      age_first_birth:   Number(g('age_first_birth')),
-      living_children:   Number(g('living_children')),
-      pregnancy_loss:    g('pregnancy_loss'),
-      marital_status:    g('marital_status'),
-      union_status:      g('union_status'),
-      partner_education: g('partner_education'),
-      currently_working: g('currently_working'),
+      age:                +g('age'),
+      age_group:           g('age_group'),
+      county:              g('county'),
+      residence_type:      g('residence_type'),
+      education_level:     g('education_level'),
+      religion:            g('religion'),
+      household_size:     +g('household_size'),
+      household_head_sex:  g('household_head_sex'),
+      wealth_index:        g('wealth_index'),
+      children_ever_born: +g('children_ever_born'),
+      age_first_birth:    +g('age_first_birth'),
+      living_children:    +g('living_children'),
+      pregnancy_loss:      g('pregnancy_loss'),
+      marital_status:      g('marital_status'),
+      union_status:        g('union_status'),
+      partner_education:   g('partner_education'),
+      currently_working:   g('currently_working'),
     };
 
     try {
-      const resp = await fetch('/predict', {
+      const r = await fetch('/predict', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-API-Key': g('api_key'),
-        },
+        headers: { 'Content-Type': 'application/json', 'X-API-Key': g('api_key') },
         body: JSON.stringify(payload),
       });
-
-      const data = await resp.json();
-
-      if (!resp.ok) {
-        errorBox.textContent = 'Error: ' + (data.error || ('HTTP ' + resp.status));
-        errorBox.style.display = 'block';
-        return;
-      }
+      const data = await r.json();
+      if (!r.ok) { errMsg.textContent = data.error || 'HTTP ' + r.status; errBox.style.display = 'flex'; return; }
 
       const isRisk = data.risk_flag === 'non_use_risk';
-      resultBox.className = isRisk ? 'risk' : 'safe';
+      res.className = isRisk ? 'risk' : 'safe';
 
-      const sorted = Object.entries(data.probabilities)
-        .sort((a, b) => b[1] - a[1]);
+      const sorted = Object.entries(data.probabilities).sort((a,b) => b[1]-a[1]);
+      const icon   = isRisk ? '⚠️' : '✅';
+      const flag   = isRisk ? '⚠ Non-use Risk' : '✓ Using a Method';
 
-      resultBox.innerHTML = `
-        <div class="verdict">Prediction: ${data.prediction}</div>
-        <span class="flag-badge">${isRisk ? '⚠ Non-use Risk' : '✓ Using a Method'}</span>
+      res.innerHTML = `
+        <div class="result-top">
+          <div><div class="result-prediction">${icon} ${data.prediction}</div></div>
+          <span class="result-badge">${flag}</span>
+        </div>
         <div class="prob-grid">
-          ${sorted.map(([cls, p]) => `
+          ${sorted.map(([cls,p]) => `
             <div class="prob-item">
-              <div class="cls">${cls}</div>
-              <div class="pct">${(p * 100).toFixed(1)}%</div>
-              <div class="prob-bar-wrap">
-                <div class="prob-bar" style="width:${(p*100).toFixed(1)}%"></div>
-              </div>
+              <div class="prob-cls">${cls}</div>
+              <div class="prob-pct">${(p*100).toFixed(1)}%</div>
+              <div class="bar-bg"><div class="bar-fg" style="width:${(p*100).toFixed(1)}%"></div></div>
             </div>`).join('')}
         </div>`;
-      resultBox.style.display = 'block';
-
-    } catch (err) {
-      errorBox.textContent = 'Network error: ' + err.message;
-      errorBox.style.display = 'block';
+      res.style.display = 'block';
+    } catch(err) {
+      errMsg.textContent = 'Network error: ' + err.message;
+      errBox.style.display = 'flex';
+    } finally {
+      btn.classList.remove('loading'); btn.disabled = false;
+      btnTxt.textContent = 'Get Prediction';
     }
   });
 </script>
