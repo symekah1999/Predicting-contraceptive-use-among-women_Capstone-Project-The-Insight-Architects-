@@ -6,745 +6,571 @@
   <title>Contraceptive Use Predictor · The Insight Architects</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --navy:#0B1F4B;--navy2:#0D2560;--teal:#0D9488;--teal2:#0F766E;
+      --tealL:#CCFBF1;--tealXL:#F0FDFA;--red:#DC2626;--redL:#FEF2F2;
+      --green:#059669;--greenL:#ECFDF5;--gold:#D97706;--goldL:#FFFBEB;
+      --purple:#7C3AED;--slate:#475569;--slateL:#94A3B8;
+      --border:#E2E8F0;--bg:#F8FAFC;--white:#FFFFFF;--dark:#0F172A;
+    }
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:var(--dark);min-height:100vh}
 
-    :root {
-      --navy:    #0B1F4B;
-      --navy2:   #0D2560;
-      --teal:    #0D9488;
-      --teal2:   #0F766E;
-      --tealL:   #CCFBF1;
-      --tealXL:  #F0FDFA;
-      --red:     #DC2626;
-      --redL:    #FEF2F2;
-      --green:   #059669;
-      --greenL:  #ECFDF5;
-      --gold:    #D97706;
-      --goldL:   #FFFBEB;
-      --slate:   #475569;
-      --slateL:  #94A3B8;
-      --border:  #E2E8F0;
-      --bg:      #F8FAFC;
-      --white:   #FFFFFF;
-      --dark:    #0F172A;
-      --mid:     #1E293B;
-    }
+    /* NAV */
+    nav{position:sticky;top:0;z-index:200;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 28px;height:60px;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+    .nav-left{display:flex;align-items:center;gap:12px}
+    .nav-logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,var(--teal),#06B6D4);display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-weight:800;font-size:14px;color:#fff}
+    .nav-title{font-family:'Sora',sans-serif;font-weight:700;font-size:15px;color:#fff}
+    .nav-sub{font-size:11px;color:var(--slateL);margin-top:1px}
+    .nav-pill{background:rgba(13,148,136,.15);border:1px solid rgba(13,148,136,.35);color:var(--tealL);font-size:11px;font-weight:600;padding:4px 12px;border-radius:999px}
 
-    body {
-      font-family: 'Inter', system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--dark);
-      min-height: 100vh;
-    }
+    /* HERO */
+    .hero{background:linear-gradient(135deg,#060E26 0%,var(--navy) 45%,#0A3455 100%);padding:58px 28px 50px;position:relative;overflow:hidden}
+    .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 70% at 80% 30%,rgba(13,148,136,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 50% at 10% 80%,rgba(6,182,212,.10) 0%,transparent 55%)}
+    .hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);background-size:48px 48px}
+    .hero-inner{position:relative;z-index:1;max-width:980px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(13,148,136,.12);border:1px solid rgba(13,148,136,.3);color:var(--tealL);font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:18px}
+    .hero h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(24px,3.5vw,38px);color:#fff;line-height:1.12;margin-bottom:14px}
+    .hero h1 em{color:#5EEAD4;font-style:normal}
+    .hero-desc{font-size:14.5px;color:#94A3B8;line-height:1.65;max-width:520px;margin-bottom:28px}
+    .hero-stats{display:flex;gap:26px;flex-wrap:wrap}
+    .stat-val{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;color:#5EEAD4;display:block}
+    .stat-lbl{font-size:10px;color:#64748B;text-transform:uppercase;letter-spacing:.08em;margin-top:3px;display:block}
+    .model-badge{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:22px 24px;text-align:center;min-width:175px;backdrop-filter:blur(8px)}
+    .mbadge-icon{width:50px;height:50px;border-radius:14px;margin:0 auto 12px;background:linear-gradient(135deg,var(--teal),#0891B2);display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 16px rgba(13,148,136,.35)}
+    .mbadge-name{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+    .mbadge-auc{font-size:12px;color:var(--tealL);font-weight:600;background:rgba(13,148,136,.15);padding:3px 10px;border-radius:999px;display:inline-block;margin-bottom:6px}
+    .mbadge-metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:10px}
+    .mm-item{background:rgba(255,255,255,.06);border-radius:8px;padding:6px 4px;text-align:center}
+    .mm-val{font-family:'Sora',sans-serif;font-size:13px;font-weight:800;color:#5EEAD4;display:block}
+    .mm-lbl{font-size:9px;color:#64748B;display:block;margin-top:1px}
 
-    /* ─── NAV ─────────────────────────────────────────────────────────── */
-    nav {
-      position: sticky; top: 0; z-index: 200;
-      background: var(--navy);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 28px; height: 60px;
-      box-shadow: 0 1px 0 rgba(255,255,255,0.06), 0 4px 24px rgba(0,0,0,0.3);
-    }
-    .nav-left { display: flex; align-items: center; gap: 12px; }
-    .nav-logo {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--teal), #06B6D4);
-      display: flex; align-items: center; justify-content: center;
-      font-family: 'Sora', sans-serif; font-weight: 800; font-size: 14px;
-      color: #fff; letter-spacing: -0.5px;
-      box-shadow: 0 2px 8px rgba(13,148,136,0.4);
-    }
-    .nav-title { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px; color: #fff; }
-    .nav-sub   { font-size: 11px; color: var(--slateL); margin-top: 1px; }
-    .nav-pill {
-      background: rgba(13,148,136,0.15); border: 1px solid rgba(13,148,136,0.35);
-      color: var(--tealL); font-size: 11px; font-weight: 600; letter-spacing: 0.05em;
-      padding: 4px 12px; border-radius: 999px;
-    }
+    /* STATS STRIP */
+    .strip{background:var(--navy);padding:0 28px;border-bottom:1px solid rgba(255,255,255,.06)}
+    .strip-inner{max-width:980px;margin:0 auto;display:flex;overflow-x:auto}
+    .stab{flex:1;min-width:130px;padding:13px 14px;display:flex;align-items:center;gap:8px;white-space:nowrap;border-bottom:3px solid transparent}
+    .stab:hover{border-bottom-color:rgba(13,148,136,.4)}
+    .sv{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:var(--teal)}
+    .sl{font-size:11px;color:var(--slateL);line-height:1.3}
 
-    /* ─── HERO ────────────────────────────────────────────────────────── */
-    .hero {
-      background: linear-gradient(135deg, #060E26 0%, var(--navy) 45%, #0A3455 100%);
-      padding: 64px 28px 56px;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 60% 70% at 80% 30%, rgba(13,148,136,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 50% at 10% 80%, rgba(6,182,212,0.10) 0%, transparent 55%);
-    }
-    /* Animated grid lines */
-    .hero::after {
-      content: '';
-      position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
-      background-size: 48px 48px;
-    }
-    .hero-inner {
-      position: relative; z-index: 1;
-      max-width: 900px; margin: 0 auto;
-      display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
-    }
-    .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(13,148,136,0.12); border: 1px solid rgba(13,148,136,0.3);
-      color: var(--tealL); font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 5px 14px; border-radius: 999px;
-      margin-bottom: 18px;
-    }
-    .hero-eyebrow span { font-size: 13px; }
-    .hero h1 {
-      font-family: 'Sora', sans-serif; font-weight: 800;
-      font-size: clamp(26px, 3.5vw, 40px); color: #fff;
-      line-height: 1.12; letter-spacing: -0.5px; margin-bottom: 14px;
-    }
-    .hero h1 em { color: #5EEAD4; font-style: normal; }
-    .hero-desc {
-      font-size: 15px; color: #94A3B8; line-height: 1.65; max-width: 520px;
-      margin-bottom: 28px;
-    }
-    .hero-stats {
-      display: flex; gap: 28px; flex-wrap: wrap;
-    }
-    .stat { text-align: center; }
-    .stat-val {
-      font-family: 'Sora', sans-serif; font-size: 26px; font-weight: 800;
-      color: #5EEAD4; display: block; line-height: 1;
-    }
-    .stat-lbl {
-      font-size: 10px; color: #64748B; text-transform: uppercase;
-      letter-spacing: 0.08em; margin-top: 4px; display: block;
-    }
-    /* Model badge */
-    .model-badge {
-      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 16px; padding: 22px 26px; text-align: center;
-      min-width: 180px; backdrop-filter: blur(8px);
-    }
-    .model-badge-icon {
-      width: 52px; height: 52px; border-radius: 14px; margin: 0 auto 12px;
-      background: linear-gradient(135deg, var(--teal), #0891B2);
-      display: flex; align-items: center; justify-content: center; font-size: 22px;
-      box-shadow: 0 4px 16px rgba(13,148,136,0.35);
-    }
-    .model-badge-name {
-      font-family: 'Sora', sans-serif; font-size: 16px; font-weight: 700; color: #fff;
-      margin-bottom: 6px;
-    }
-    .model-badge-auc {
-      font-size: 12px; color: var(--tealL); font-weight: 600;
-      background: rgba(13,148,136,0.15); padding: 3px 10px; border-radius: 999px;
-      display: inline-block; margin-bottom: 8px;
-    }
-    .model-badge-label { font-size: 11px; color: #64748B; }
+    /* COUNTY FACTS */
+    .facts{background:linear-gradient(135deg,#0D2560,#0B1F4B);border-bottom:1px solid rgba(255,255,255,.06);padding:22px 28px}
+    .facts-inner{max-width:980px;margin:0 auto}
+    .facts-title{font-family:'Sora',sans-serif;font-size:12px;font-weight:700;color:var(--tealL);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+    .facts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+    .fc{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 14px}
+    .fc-county{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
+    .fc-bw{background:rgba(255,255,255,.08);border-radius:4px;height:6px;margin:6px 0}
+    .fc-b{height:6px;border-radius:4px}
+    .fc-pct{font-family:'Sora',sans-serif;font-size:19px;font-weight:800;margin-bottom:2px}
+    .fc-desc{font-size:11px;color:#64748B;line-height:1.4}
 
-    /* ─── MAIN LAYOUT ─────────────────────────────────────────────────── */
-    .main {
-      max-width: 980px; margin: 0 auto;
-      padding: 36px 20px 60px;
-      display: grid; grid-template-columns: 1fr 300px; gap: 24px;
-      align-items: start;
-    }
+    /* INSIGHTS BANNER */
+    .insights-banner{background:var(--tealXL);border-bottom:2px solid var(--tealL);padding:16px 28px}
+    .ib-inner{max-width:980px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+    .ib-item{display:flex;align-items:flex-start;gap:10px}
+    .ib-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+    .ib-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:2px}
+    .ib-body{font-size:11.5px;color:var(--slate);line-height:1.45}
+    .ib-body strong{color:var(--teal2)}
 
-    /* ─── CARD ────────────────────────────────────────────────────────── */
-    .card {
-      background: var(--white); border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
-      overflow: hidden;
-    }
-    .card-head {
-      background: linear-gradient(135deg, var(--navy), #0D2560);
-      padding: 18px 22px; display: flex; align-items: center; gap: 12px;
-    }
-    .card-head-icon {
-      width: 36px; height: 36px; border-radius: 10px;
-      background: rgba(13,148,136,0.2); border: 1px solid rgba(13,148,136,0.3);
-      display: flex; align-items: center; justify-content: center; font-size: 16px;
-      flex-shrink: 0;
-    }
-    .card-head h2 { font-family: 'Sora', sans-serif; font-size: 15px; font-weight: 700; color: #fff; }
-    .card-head p  { font-size: 12px; color: #94A3B8; margin-top: 2px; }
-    .card-body { padding: 22px; }
+    /* MAIN */
+    .main{max-width:980px;margin:0 auto;padding:30px 20px 60px;display:grid;grid-template-columns:1fr 288px;gap:20px;align-items:start}
+    .card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);overflow:hidden}
+    .card-head{background:linear-gradient(135deg,var(--navy),#0D2560);padding:18px 22px;display:flex;align-items:center;gap:12px}
+    .card-head-icon{width:36px;height:36px;border-radius:10px;background:rgba(13,148,136,.2);border:1px solid rgba(13,148,136,.3);display:flex;align-items:center;justify-content:center;font-size:16px}
+    .card-head h2{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:#fff}
+    .card-head p{font-size:12px;color:#94A3B8;margin-top:2px}
+    .card-body{padding:22px}
+    .sect{display:flex;align-items:center;gap:10px;margin:18px 0 12px}
+    .sect span{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--teal);white-space:nowrap}
+    .sect::before,.sect::after{content:'';flex:1;height:1px;background:var(--border)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .field{margin-bottom:12px}
+    label{display:block;font-size:12px;font-weight:600;color:var(--slate);margin-bottom:5px}
+    label .req{color:var(--red)}
+    input[type="number"],select{width:100%;padding:9px 12px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:13.5px;color:var(--dark);background:#FAFBFC;transition:border-color .15s,box-shadow .15s;appearance:none;outline:none;font-family:'Inter',sans-serif}
+    input:focus,select:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,.12);background:#fff}
+    .hint{font-size:11px;color:var(--slateL);margin-top:3px}
+    .api-wrap{position:relative}
+    .api-wrap input{padding-right:44px;font-family:monospace;font-size:13px}
+    .api-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:var(--slateL);font-size:16px;padding:4px}
+    .btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy),var(--navy2));color:#fff;border:none;border-radius:10px;font-family:'Sora',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .btn:hover{background:linear-gradient(135deg,var(--navy2),var(--teal2));transform:translateY(-1px);box-shadow:0 6px 20px rgba(11,31,75,.28)}
+    .btn.loading{opacity:.7;cursor:not-allowed}
+    .spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-    /* ─── SECTION DIVIDERS ────────────────────────────────────────────── */
-    .sect {
-      display: flex; align-items: center; gap: 10px;
-      margin: 20px 0 14px;
-    }
-    .sect span {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.1em; color: var(--teal); white-space: nowrap;
-    }
-    .sect::before, .sect::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
+    /* RESULT */
+    #result{margin-top:18px;border-radius:14px;padding:22px;display:none;animation:slideUp .3s ease}
+    @keyframes slideUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    #result.risk{background:var(--redL);border:1.5px solid #FECACA}
+    #result.safe{background:var(--greenL);border:1.5px solid #A7F3D0}
 
-    /* ─── FORM ELEMENTS ───────────────────────────────────────────────── */
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .field { margin-bottom: 12px; }
+    .r-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:18px}
+    .r-icon{font-size:36px;line-height:1}
+    .r-right{flex:1}
+    .r-pred{font-family:'Sora',sans-serif;font-size:21px;font-weight:800}
+    #result.risk .r-pred{color:var(--red)} #result.safe .r-pred{color:var(--green)}
+    .r-sub{font-size:12px;color:var(--slate);margin-top:4px}
+    .r-badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;margin-top:8px}
+    #result.risk .r-badge{background:#FEE2E2;color:#991B1B} #result.safe .r-badge{background:#D1FAE5;color:#065F46}
 
-    label {
-      display: block; font-size: 12px; font-weight: 600;
-      color: var(--slate); margin-bottom: 5px;
-    }
-    label .req { color: var(--red); margin-left: 2px; }
+    /* METRIC PILLS */
+    .r-metrics{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+    .r-metric{background:var(--white);border:1px solid var(--border);border-radius:8px;padding:6px 12px;text-align:center;flex:1;min-width:90px}
+    .rm-val{font-family:'Sora',sans-serif;font-size:15px;font-weight:800;color:var(--navy);display:block}
+    .rm-lbl{font-size:10px;color:var(--slateL);font-weight:600;display:block;margin-top:1px}
 
-    input[type="number"], select {
-      width: 100%; padding: 9px 12px;
-      border: 1.5px solid #CBD5E1; border-radius: 9px;
-      font-size: 13.5px; color: var(--dark); background: #FAFBFC;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-      appearance: none; outline: none; font-family: 'Inter', sans-serif;
-    }
-    input[type="number"]:focus, select:focus {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
-      background: #fff;
-    }
-    .hint { font-size: 11px; color: var(--slateL); margin-top: 3px; }
+    .glbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate);margin:14px 0 8px;display:flex;align-items:center;gap:6px}
+    .glbl::after{content:'';flex:1;height:1px;background:var(--border)}
 
-    /* API key field */
-    .api-wrap { position: relative; }
-    .api-wrap input {
-      padding-right: 44px;
-      font-family: monospace; font-size: 13px;
-      letter-spacing: 0.04em;
-    }
-    .api-toggle {
-      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-      background: none; border: none; cursor: pointer; color: var(--slateL);
-      font-size: 16px; line-height: 1; padding: 4px;
-    }
-    .api-toggle:hover { color: var(--slate); }
+    .pg{border-radius:10px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+    .pg.mod{background:var(--tealXL);border:1.5px solid var(--tealL)}
+    .pg.nmod{background:var(--redL);border:1.5px solid #FECACA}
+    .pg-name{font-family:'Sora',sans-serif;font-size:14px;font-weight:700}
+    .mod .pg-name{color:var(--teal2)} .nmod .pg-name{color:var(--red)}
+    .pg-desc{font-size:11px;color:var(--slate);margin-top:2px}
+    .pg-pct{font-family:'Sora',sans-serif;font-size:26px;font-weight:800}
+    .mod .pg-pct{color:var(--teal)} .nmod .pg-pct{color:var(--red)}
 
-    /* ─── SUBMIT BUTTON ───────────────────────────────────────────────── */
-    .btn {
-      width: 100%; padding: 13px;
-      background: linear-gradient(135deg, var(--navy), var(--navy2));
-      color: #fff; border: none; border-radius: 10px;
-      font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700;
-      cursor: pointer; margin-top: 4px;
-      transition: all 0.2s; display: flex; align-items: center;
-      justify-content: center; gap: 8px; letter-spacing: 0.02em;
-    }
-    .btn:hover { background: linear-gradient(135deg, var(--navy2), var(--teal2)); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(11,31,75,0.28); }
-    .btn:active { transform: translateY(0); }
-    .btn.loading { opacity: 0.7; cursor: not-allowed; }
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
-      border-radius: 50%; animation: spin 0.7s linear infinite;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .sub-cls{display:grid;gap:6px;margin-bottom:14px}
+    .si{background:#fff;border-radius:8px;padding:9px 12px;border:1px solid var(--border);display:flex;align-items:center;gap:10px}
+    .si-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .si-name{font-size:12px;font-weight:600;color:var(--dark);flex:1}
+    .si-pct{font-family:'Sora',sans-serif;font-size:13.5px;font-weight:800;color:var(--navy)}
+    .si-bw{width:72px;background:var(--border);border-radius:4px;height:4px}
+    .si-b{height:4px;border-radius:4px}
 
-    /* ─── RESULT ──────────────────────────────────────────────────────── */
-    #result {
-      margin-top: 18px; border-radius: 12px;
-      padding: 20px; display: none; animation: slideUp 0.3s ease;
-    }
-    #result.risk  { background: var(--redL);   border: 1.5px solid #FECACA; }
-    #result.safe  { background: var(--greenL); border: 1.5px solid #A7F3D0; }
+    .drivers{margin:12px 0}
+    .drivers-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slate);margin-bottom:7px}
+    .chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;margin:3px 3px 3px 0}
+    .chip.r{background:#FEE2E2;color:#991B1B} .chip.g{background:#D1FAE5;color:#065F46}
 
-    @keyframes slideUp {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    .ins-block{background:linear-gradient(135deg,var(--navy),var(--navy2));border-radius:12px;padding:16px;margin-top:12px}
+    .ins-block-title{font-family:'Sora',sans-serif;font-size:11px;font-weight:700;color:var(--tealL);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px}
+    .ins-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px}
+    .ins-item:last-child{margin-bottom:0}
+    .ins-bul{width:6px;height:6px;border-radius:50%;background:var(--teal);flex-shrink:0;margin-top:5px}
+    .ins-txt{font-size:12px;color:#94A3B8;line-height:1.5}
+    .ins-txt strong{color:var(--tealL)}
 
-    .result-top {
-      display: flex; align-items: flex-start;
-      justify-content: space-between; gap: 10px; margin-bottom: 14px;
-    }
-    .result-prediction { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 800; }
-    #result.risk  .result-prediction { color: var(--red); }
-    #result.safe  .result-prediction { color: var(--green); }
+    #err-box{margin-top:14px;background:var(--redL);border:1.5px solid #FECACA;border-radius:10px;padding:12px 16px;color:var(--red);font-size:13px;display:none;align-items:flex-start;gap:8px}
 
-    .result-badge {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 999px;
-    }
-    #result.risk  .result-badge { background: #FEE2E2; color: #991B1B; }
-    #result.safe  .result-badge { background: #D1FAE5; color: #065F46; }
+    /* SIDEBAR */
+    .sidebar{display:flex;flex-direction:column;gap:16px}
+    .team-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);overflow:hidden}
+    .team-head{background:linear-gradient(135deg,var(--navy),#0D2560);padding:15px 18px}
+    .team-head h3{font-family:'Sora',sans-serif;font-size:14px;font-weight:700;color:#fff}
+    .team-head p{font-size:11px;color:#94A3B8;margin-top:3px}
+    .team-body{padding:14px 18px}
+    .tlw{text-align:center;margin-bottom:13px;padding-bottom:13px;border-bottom:1px solid var(--border)}
+    .tlogo{width:56px;height:56px;margin:0 auto 10px;background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:20px;font-weight:900;color:#fff;letter-spacing:-2px}
+    .tname{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy)}
+    .ttag{font-size:11px;color:var(--slateL);margin-top:2px}
+    .mlbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--slateL);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+    .member{display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid #F8FAFC}
+    .member:last-child{border-bottom:none}
+    .mav{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff}
+    .mn{font-size:12px;font-weight:600;color:var(--dark)} .mr{font-size:10px;color:var(--slateL);margin-top:1px}
+    .av1{background:linear-gradient(135deg,#7C3AED,#5B21B6)} .av2{background:linear-gradient(135deg,#0D9488,#0891B2)}
+    .av3{background:linear-gradient(135deg,#DC2626,#B91C1C)} .av4{background:linear-gradient(135deg,#D97706,#B45309)}
+    .av5{background:linear-gradient(135deg,#059669,#047857)} .av6{background:linear-gradient(135deg,#0B1F4B,#0D2560)}
 
-    .prob-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-    .prob-item {
-      background: #fff; border-radius: 9px;
-      padding: 10px 12px; border: 1px solid var(--border);
-    }
-    .prob-cls { font-size: 10px; color: var(--slateL); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
-    .prob-pct { font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 800; color: var(--navy); margin: 2px 0; }
-    .bar-bg  { background: var(--border); border-radius: 4px; height: 4px; }
-    .bar-fg  { height: 4px; border-radius: 4px; background: var(--teal); transition: width 0.6s ease; }
+    .info-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);padding:15px 18px}
+    .info-card h4{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+    .irow{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #F8FAFC;font-size:12px}
+    .irow:last-child{border-bottom:none}
+    .ik{color:var(--slateL)} .iv{font-weight:700;color:var(--navy)}
+    .iv.green{color:var(--green)} .iv.teal{color:var(--teal)}
 
-    /* ─── ERROR ───────────────────────────────────────────────────────── */
-    #err-box {
-      margin-top: 14px; background: var(--redL);
-      border: 1.5px solid #FECACA; border-radius: 10px;
-      padding: 12px 16px; color: var(--red); font-size: 13px;
-      display: none; align-items: flex-start; gap: 8px;
-    }
+    /* Metrics card */
+    .metrics-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);overflow:hidden}
+    .metrics-head{background:linear-gradient(135deg,#1e1b4b,#312e81);padding:13px 18px}
+    .metrics-head h4{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#fff}
+    .metrics-head p{font-size:11px;color:#A5B4FC;margin-top:2px}
+    .metrics-body{padding:14px 18px}
+    .metric-row{margin-bottom:12px}
+    .metric-row:last-child{margin-bottom:0}
+    .metric-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+    .metric-label{font-size:12px;font-weight:600;color:var(--slate)}
+    .metric-val{font-family:'Sora',sans-serif;font-size:17px;font-weight:800;color:var(--navy)}
+    .metric-bw{background:var(--border);border-radius:4px;height:6px}
+    .metric-b{height:6px;border-radius:4px;transition:width .8s ease}
+    .metric-sub{font-size:10.5px;color:var(--slateL);margin-top:3px}
 
-    /* ─── SIDEBAR ─────────────────────────────────────────────────────── */
-    .sidebar { display: flex; flex-direction: column; gap: 18px; }
+    /* Gap card */
+    .gap-card{background:var(--white);border-radius:16px;border:1px solid var(--border);box-shadow:0 1px 3px rgba(0,0,0,.04),0 8px 24px rgba(0,0,0,.06);overflow:hidden}
+    .gap-head{background:linear-gradient(135deg,#3B0764,#581C87);padding:13px 18px}
+    .gap-head h4{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;color:#fff}
+    .gap-head p{font-size:11px;color:#C4B5FD;margin-top:2px}
+    .gap-body{padding:13px 18px}
+    .gi{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+    .gi:last-child{margin-bottom:0}
+    .gn{font-size:11px;font-weight:600;color:var(--dark);width:58px;flex-shrink:0}
+    .gbw{flex:1;background:var(--border);border-radius:4px;height:7px}
+    .gb{height:7px;border-radius:4px}
+    .gp{font-family:'Sora',sans-serif;font-size:11.5px;font-weight:800;width:36px;text-align:right;flex-shrink:0}
 
-    /* Team card */
-    .team-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06); overflow: hidden; }
-    .team-head { background: linear-gradient(135deg, var(--navy), #0D2560); padding: 16px 18px; }
-    .team-head h3 { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: #fff; }
-    .team-head p  { font-size: 11px; color: #94A3B8; margin-top: 3px; }
-    .team-body { padding: 16px 18px; }
+    footer{background:var(--navy);padding:20px 28px;text-align:center}
+    footer p{color:#475569;font-size:12px;line-height:1.75}
+    footer strong{color:#94A3B8}
 
-    .team-logo-wrap { text-align: center; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
-    .team-logo {
-      width: 60px; height: 60px; margin: 0 auto 10px;
-      background: linear-gradient(135deg, var(--navy), var(--teal));
-      border-radius: 15px; display: flex; align-items: center; justify-content: center;
-      font-family: 'Sora', sans-serif; font-size: 22px; font-weight: 900; color: #fff;
-      letter-spacing: -2px; box-shadow: 0 4px 16px rgba(11,31,75,0.22);
-    }
-    .team-name { font-family: 'Sora', sans-serif; font-size: 14px; font-weight: 700; color: var(--navy); }
-    .team-tag  { font-size: 11px; color: var(--slateL); margin-top: 2px; }
-
-    .members-lbl {
-      font-size: 10px; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.1em; color: var(--slateL);
-      margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border);
-    }
-    .member {
-      display: flex; align-items: center; gap: 10px;
-      padding: 7px 0; border-bottom: 1px solid #F8FAFC;
-    }
-    .member:last-child { border-bottom: none; }
-    .member-av {
-      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800; color: #fff;
-    }
-    .member-name { font-size: 12.5px; font-weight: 600; color: var(--dark); }
-    .member-role { font-size: 10.5px; color: var(--slateL); margin-top: 1px; }
-
-    /* Member avatar colours — distinct for each */
-    .av1 { background: linear-gradient(135deg,#7C3AED,#5B21B6); }
-    .av2 { background: linear-gradient(135deg,#0D9488,#0891B2); }
-    .av3 { background: linear-gradient(135deg,#DC2626,#B91C1C); }
-    .av4 { background: linear-gradient(135deg,#D97706,#B45309); }
-    .av5 { background: linear-gradient(135deg,#059669,#047857); }
-    .av6 { background: linear-gradient(135deg,#0B1F4B,#0D2560); }
-
-    /* Model info card */
-    .info-card { background: var(--white); border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06); padding: 16px 18px; }
-    .info-card h4 { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-    .info-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #F8FAFC; font-size: 12px; }
-    .info-row:last-child { border-bottom: none; }
-    .info-key  { color: var(--slateL); }
-    .info-val  { font-weight: 700; color: var(--navy); }
-    .info-val.green { color: var(--green); }
-    .info-val.teal  { color: var(--teal); }
-
-    /* AUC highlight */
-    .auc-highlight {
-      margin-top: 12px; background: var(--tealXL); border: 1px solid var(--tealL);
-      border-radius: 10px; padding: 10px 14px; text-align: center;
-    }
-    .auc-num { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; color: var(--teal); display: block; }
-    .auc-lbl { font-size: 10px; color: var(--teal2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
-
-    /* ─── FOOTER ──────────────────────────────────────────────────────── */
-    footer {
-      background: var(--navy); padding: 22px 28px; text-align: center;
-    }
-    footer p { color: #475569; font-size: 12px; line-height: 1.75; }
-    footer strong { color: #94A3B8; }
-
-    /* ─── RESPONSIVE ──────────────────────────────────────────────────── */
-    @media (max-width: 740px) {
-      .main { grid-template-columns: 1fr; }
-      .hero-inner { grid-template-columns: 1fr; }
-      .model-badge { display: none; }
-      .row { grid-template-columns: 1fr; }
-      .sidebar { order: -1; }
+    @media(max-width:740px){
+      .main{grid-template-columns:1fr} .hero-inner{grid-template-columns:1fr}
+      .model-badge{display:none} .row{grid-template-columns:1fr}
+      .sidebar{order:-1} .ib-inner{grid-template-columns:1fr}
     }
   </style>
 </head>
 <body>
 
-<!-- ── NAV ────────────────────────────────────────────────────────────── -->
 <nav>
   <div class="nav-left">
     <div class="nav-logo">IA</div>
-    <div>
-      <div class="nav-title">The Insight Architects</div>
-      <div class="nav-sub">KDHS 2022 · Contraceptive Use Prediction</div>
-    </div>
+    <div><div class="nav-title">The Insight Architects</div><div class="nav-sub">KDHS 2022 · Contraceptive Use Prediction</div></div>
   </div>
   <div class="nav-pill">⚡ LightGBM · Live</div>
 </nav>
 
-<!-- ── HERO ───────────────────────────────────────────────────────────── -->
 <div class="hero">
   <div class="hero-inner">
     <div>
       <div class="hero-eyebrow"><span>🇰🇪</span> Kenya Demographic &amp; Health Survey 2022</div>
       <h1>Contraceptive Use<br><em>Risk Prediction</em></h1>
-      <p class="hero-desc">
-        Enter a respondent's sociodemographic profile to receive an AI-powered
-        contraceptive use prediction — trained on 32,156 Kenyan women aged 15–49
-        across all 47 counties.
-      </p>
+      <p class="hero-desc">Enter a respondent's sociodemographic profile to receive an AI-powered prediction — trained on 32,156 Kenyan women aged 15–49 across all 47 counties using KDHS 2022.</p>
       <div class="hero-stats">
         <div class="stat"><span class="stat-val">32,156</span><span class="stat-lbl">Respondents</span></div>
         <div class="stat"><span class="stat-val">47</span><span class="stat-lbl">Counties</span></div>
-        <div class="stat"><span class="stat-val">72.9%</span><span class="stat-lbl">Accuracy</span></div>
-        <div class="stat"><span class="stat-val">0.804</span><span class="stat-lbl">Macro AUC</span></div>
+        <div class="stat"><span class="stat-val">95.9%</span><span class="stat-lbl">Accuracy</span></div>
+        <div class="stat"><span class="stat-val">0.951</span><span class="stat-lbl">Macro AUC</span></div>
+        <div class="stat"><span class="stat-val">56pp</span><span class="stat-lbl">County Gap</span></div>
       </div>
     </div>
     <div class="model-badge">
-      <div class="model-badge-icon">⚡</div>
-      <div class="model-badge-name">LightGBM</div>
-      <div class="model-badge-auc">Macro-AUC 0.804</div>
-      <div class="model-badge-label">Optuna-tuned · Selected model<br>5.6 MB · Sub-ms inference</div>
+      <div class="mbadge-icon">⚡</div>
+      <div class="mbadge-name">LightGBM</div>
+      <div class="mbadge-auc">Optuna-Tuned</div>
+      <div class="mbadge-metrics">
+        <div class="mm-item"><span class="mm-val">95.9%</span><span class="mm-lbl">Accuracy</span></div>
+        <div class="mm-item"><span class="mm-val">0.510</span><span class="mm-lbl">Macro-F1</span></div>
+        <div class="mm-item"><span class="mm-val">0.951</span><span class="mm-lbl">AUC</span></div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ── MAIN ────────────────────────────────────────────────────────────── -->
-<div class="main">
+<div class="strip">
+  <div class="strip-inner">
+    <div class="stab"><span class="sv">58.1%</span><span class="sl">use no method<br>nationwide</span></div>
+    <div class="stab"><span class="sv">37.9%</span><span class="sl">use a modern<br>method</span></div>
+    <div class="stab"><span class="sv">57.0%</span><span class="sl">Embu — highest<br>county</span></div>
+    <div class="stab"><span class="sv">1.2%</span><span class="sl">Mandera — lowest<br>county</span></div>
+    <div class="stab"><span class="sv">+16pp</span><span class="sl">Poorest→Poorer<br>wealth jump</span></div>
+    <div class="stab"><span class="sv">500</span><span class="sl">boosting trees<br>in the model</span></div>
+  </div>
+</div>
 
-  <!-- FORM -->
+<div class="facts">
+  <div class="facts-inner">
+    <div class="facts-title">📍 Kenya County Context — Modern Contraceptive Use Rate (KDHS 2022)</div>
+    <div class="facts-grid">
+      <div class="fc"><div class="fc-county" style="color:#5EEAD4">🟢 Embu</div><div class="fc-pct" style="color:#5EEAD4">57.0%</div><div class="fc-bw"><div class="fc-b" style="width:57%;background:var(--teal)"></div></div><div class="fc-desc">Highest in Kenya. Strong central highland health infrastructure and high education levels.</div></div>
+      <div class="fc"><div class="fc-county" style="color:#5EEAD4">🟢 Kirinyaga</div><div class="fc-pct" style="color:#5EEAD4">54.2%</div><div class="fc-bw"><div class="fc-b" style="width:54.2%;background:var(--teal)"></div></div><div class="fc-desc">Second highest. Well-served county with strong community health promoter coverage.</div></div>
+      <div class="fc"><div class="fc-county" style="color:#818CF8">⚪ National avg</div><div class="fc-pct" style="color:#818CF8">37.9%</div><div class="fc-bw"><div class="fc-b" style="width:37.9%;background:#6366F1"></div></div><div class="fc-desc">National average hides a 56-point spread. County-level targeting is essential for impact.</div></div>
+      <div class="fc"><div class="fc-county" style="color:#FCA5A5">🔴 Garissa</div><div class="fc-pct" style="color:#FCA5A5">4.5%</div><div class="fc-bw"><div class="fc-b" style="width:4.5%;background:var(--red)"></div></div><div class="fc-desc">ASAL county. SHAP confirms the geographic barrier persists after controlling for wealth and religion.</div></div>
+      <div class="fc"><div class="fc-county" style="color:#FCA5A5">🔴 Wajir</div><div class="fc-pct" style="color:#FCA5A5">2.8%</div><div class="fc-bw"><div class="fc-b" style="width:2.8%;background:var(--red)"></div></div><div class="fc-desc">North Eastern ASAL county. Clinic access and commodity supply chains are the primary barriers.</div></div>
+      <div class="fc"><div class="fc-county" style="color:#FCA5A5">🔴 Mandera</div><div class="fc-pct" style="color:#FCA5A5">1.2%</div><div class="fc-bw"><div class="fc-b" style="width:1.2%;background:var(--red)"></div></div><div class="fc-desc">Lowest in Kenya. A 56-point gap below Embu — the signature finding of this project.</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="insights-banner">
+  <div class="ib-inner">
+    <div class="ib-item"><div class="ib-icon">🏔</div><div><div class="ib-title">Geography is the biggest driver</div><div class="ib-body">County of residence outranks both wealth and education in predicting modern use. Cramér's V = 0.189 — the strongest predictor in the dataset.</div></div></div>
+    <div class="ib-item"><div class="ib-icon">💼</div><div><div class="ib-title">Employment is the most actionable lever</div><div class="ib-body">Employed women are significantly more likely to use modern methods. The 3rd strongest SHAP predictor — and the one most directly changeable through programmes.</div></div></div>
+    <div class="ib-item"><div class="ib-icon">💰</div><div><div class="ib-title">Wealth shows a cliff, not a gradient</div><div class="ib-body">Poorest → Poorer delivers a <strong>+16 percentage point</strong> jump in modern use. Above Poorer, three more quintiles add only 1.8pp combined.</div></div></div>
+    <div class="ib-item"><div class="ib-icon">👶</div><div><div class="ib-title">Contraception follows childbirth</div><div class="ib-body">has_given_birth is the #1 categorical predictor (Cramér's V = 0.368). Women overwhelmingly adopt contraception <em>after</em> having children, not before.</div></div></div>
+  </div>
+</div>
+
+<div class="main">
   <div>
     <div class="card">
       <div class="card-head">
         <div class="card-head-icon">🔐</div>
-        <div>
-          <h2>Respondent Prediction Form</h2>
-          <p>Complete all fields and submit to get the model's prediction</p>
-        </div>
+        <div><h2>Respondent Prediction Form</h2><p>Complete all 17 fields — each contributes to the model's prediction</p></div>
       </div>
       <div class="card-body">
         <form id="form" novalidate>
-
-          <!-- Auth -->
           <div class="sect"><span>Authentication</span></div>
           <div class="field">
             <label for="api_key">API Key <span class="req">*</span></label>
             <div class="api-wrap">
               <input type="password" id="api_key" placeholder="Enter your API key" required>
-              <button type="button" class="api-toggle" id="toggle-key" title="Show/hide">👁</button>
+              <button type="button" class="api-toggle" id="toggle-key">👁</button>
             </div>
             <p class="hint">Transmitted securely — never stored in this browser.</p>
           </div>
-
-          <!-- Demographics -->
           <div class="sect"><span>Demographics</span></div>
           <div class="row">
-            <div class="field">
-              <label for="age">Age <span class="req">*</span></label>
-              <input type="number" id="age" min="15" max="49" value="28" required>
-            </div>
-            <div class="field">
-              <label for="age_group">Age Group <span class="req">*</span></label>
-              <select id="age_group">
-                <option>15-19</option><option>20-24</option>
-                <option selected>25-29</option><option>30-34</option>
-                <option>35-39</option><option>40-44</option><option>45-49</option>
-              </select>
-            </div>
+            <div class="field"><label for="age">Age <span class="req">*</span></label><input type="number" id="age" min="15" max="49" value="28" required></div>
+            <div class="field"><label for="age_group">Age Group <span class="req">*</span></label><select id="age_group"><option>15-19</option><option>20-24</option><option selected>25-29</option><option>30-34</option><option>35-39</option><option>40-44</option><option>45-49</option></select></div>
           </div>
           <div class="row">
-            <div class="field">
-              <label for="county">County <span class="req">*</span></label>
-              <select id="county"></select>
-            </div>
-            <div class="field">
-              <label for="residence_type">Residence <span class="req">*</span></label>
-              <select id="residence_type">
-                <option>Urban</option><option selected>Rural</option>
-              </select>
-            </div>
+            <div class="field"><label for="county">County <span class="req">*</span></label><select id="county"></select></div>
+            <div class="field"><label for="residence_type">Residence <span class="req">*</span></label><select id="residence_type"><option>Urban</option><option selected>Rural</option></select></div>
           </div>
           <div class="row">
-            <div class="field">
-              <label for="religion">Religion <span class="req">*</span></label>
-              <select id="religion">
-                <option selected>Roman Catholic</option>
-                <option>Protestant/Other Christian</option>
-                <option>Evangelical/Born Again</option>
-                <option>African Instituted Church</option>
-                <option>Orthodox</option><option>Muslim</option>
-                <option>Hindu</option><option>Traditionalist</option>
-                <option>No religion</option><option>Other</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="household_head_sex">Household Head <span class="req">*</span></label>
-              <select id="household_head_sex">
-                <option selected>Male</option><option>Female</option>
-              </select>
-            </div>
+            <div class="field"><label for="religion">Religion <span class="req">*</span></label><select id="religion"><option selected>Roman Catholic</option><option>Protestant/Other Christian</option><option>Evangelical/Born Again</option><option>African Instituted Church</option><option>Orthodox</option><option>Muslim</option><option>Hindu</option><option>Traditionalist</option><option>No religion</option><option>Other</option></select></div>
+            <div class="field"><label for="household_head_sex">Household Head <span class="req">*</span></label><select id="household_head_sex"><option selected>Male</option><option>Female</option></select></div>
           </div>
-
-          <!-- Socioeconomic -->
           <div class="sect"><span>Socioeconomic Status</span></div>
           <div class="row">
-            <div class="field">
-              <label for="education_level">Education Level <span class="req">*</span></label>
-              <select id="education_level">
-                <option>No education</option><option selected>Primary</option>
-                <option>Secondary</option><option>Higher</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="wealth_index">Wealth Index <span class="req">*</span></label>
-              <select id="wealth_index">
-                <option selected>Poorest</option><option>Poorer</option>
-                <option>Middle</option><option>Richer</option><option>Richest</option>
-              </select>
-            </div>
+            <div class="field"><label for="education_level">Education Level <span class="req">*</span></label><select id="education_level"><option>No education</option><option selected>Primary</option><option>Secondary</option><option>Higher</option></select></div>
+            <div class="field"><label for="wealth_index">Wealth Index <span class="req">*</span></label><select id="wealth_index"><option selected>Poorest</option><option>Poorer</option><option>Middle</option><option>Richer</option><option>Richest</option></select></div>
           </div>
           <div class="row">
-            <div class="field">
-              <label for="partner_education">Partner Education <span class="req">*</span></label>
-              <select id="partner_education">
-                <option>No partner</option><option>No education</option>
-                <option selected>Primary</option><option>Secondary</option>
-                <option>Higher</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="currently_working">Currently Working <span class="req">*</span></label>
-              <select id="currently_working">
-                <option>Yes</option><option selected>No</option>
-              </select>
-            </div>
+            <div class="field"><label for="partner_education">Partner Education <span class="req">*</span></label><select id="partner_education"><option>No partner</option><option>No education</option><option selected>Primary</option><option>Secondary</option><option>Higher</option></select></div>
+            <div class="field"><label for="currently_working">Currently Working <span class="req">*</span></label><select id="currently_working"><option>Yes</option><option selected>No</option></select></div>
           </div>
-
-          <!-- Household & Fertility -->
           <div class="sect"><span>Household &amp; Fertility</span></div>
           <div class="row">
-            <div class="field">
-              <label for="household_size">Household Size <span class="req">*</span></label>
-              <input type="number" id="household_size" min="1" max="50" value="6">
-            </div>
-            <div class="field">
-              <label for="children_ever_born">Children Ever Born <span class="req">*</span></label>
-              <input type="number" id="children_ever_born" min="0" value="3">
-            </div>
+            <div class="field"><label for="household_size">Household Size <span class="req">*</span></label><input type="number" id="household_size" min="1" max="50" value="6"></div>
+            <div class="field"><label for="children_ever_born">Children Ever Born <span class="req">*</span></label><input type="number" id="children_ever_born" min="0" value="3"></div>
           </div>
           <div class="row">
-            <div class="field">
-              <label for="living_children">Living Children <span class="req">*</span></label>
-              <input type="number" id="living_children" min="0" value="3">
-            </div>
-            <div class="field">
-              <label for="age_first_birth">Age at First Birth <span class="req">*</span></label>
-              <input type="number" id="age_first_birth" min="0" max="49" value="19">
-              <p class="hint">Enter 0 if no births</p>
-            </div>
+            <div class="field"><label for="living_children">Living Children <span class="req">*</span></label><input type="number" id="living_children" min="0" value="3"></div>
+            <div class="field"><label for="age_first_birth">Age at First Birth <span class="req">*</span></label><input type="number" id="age_first_birth" min="0" max="49" value="19"><p class="hint">Enter 0 if no births</p></div>
           </div>
-
-          <!-- Marital -->
           <div class="sect"><span>Marital &amp; Union Status</span></div>
           <div class="row">
-            <div class="field">
-              <label for="marital_status">Marital Status <span class="req">*</span></label>
-              <select id="marital_status">
-                <option>Never married</option><option selected>Married</option>
-                <option>Living together</option><option>Widowed</option>
-                <option>Divorced</option><option>Separated</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="union_status">Union Status <span class="req">*</span></label>
-              <select id="union_status">
-                <option>Never in union</option>
-                <option selected>Currently in union</option>
-                <option>Formerly in union</option>
-              </select>
-            </div>
+            <div class="field"><label for="marital_status">Marital Status <span class="req">*</span></label><select id="marital_status"><option>Never married</option><option selected>Married</option><option>Living together</option><option>Widowed</option><option>Divorced</option><option>Separated</option></select></div>
+            <div class="field"><label for="union_status">Union Status <span class="req">*</span></label><select id="union_status"><option>Never in union</option><option selected>Currently in union</option><option>Formerly in union</option></select></div>
           </div>
-          <div class="field">
-            <label for="pregnancy_loss">Ever Had a Pregnancy Loss <span class="req">*</span></label>
-            <select id="pregnancy_loss">
-              <option selected>No</option><option>Yes</option>
-            </select>
-          </div>
-
-          <button type="submit" class="btn" id="submitBtn">
-            <span id="btnTxt">Get Prediction</span>
-          </button>
+          <div class="field"><label for="pregnancy_loss">Ever Had a Pregnancy Loss <span class="req">*</span></label><select id="pregnancy_loss"><option selected>No</option><option>Yes</option></select></div>
+          <button type="submit" class="btn" id="submitBtn"><span id="btnTxt">Get Prediction</span></button>
         </form>
-
         <div id="result"></div>
         <div id="err-box"><span>⚠</span><span id="err-msg"></span></div>
       </div>
     </div>
   </div>
 
-  <!-- SIDEBAR -->
   <div class="sidebar">
-
-    <!-- Team -->
     <div class="team-card">
-      <div class="team-head">
-        <h3>The Insight Architects</h3>
-        <p>KDHS 2022 Capstone Project</p>
-      </div>
+      <div class="team-head"><h3>The Insight Architects</h3><p>KDHS 2022 Capstone Project</p></div>
       <div class="team-body">
-        <div class="team-logo-wrap">
-          <div class="team-logo">IA</div>
-          <div class="team-name">The Insight Architects</div>
-          <div class="team-tag">Data Science · Machine Learning · Public Health</div>
+        <div class="tlw"><div class="tlogo">IA</div><div class="tname">The Insight Architects</div><div class="ttag">Data Science · ML · Public Health</div></div>
+        <div class="mlbl">Team Members</div>
+        <div class="member"><div class="mav av1">CS</div><div><div class="mn">Clare Simiyu</div><div class="mr">Data Science</div></div></div>
+        <div class="member"><div class="mav av2">AS</div><div><div class="mn">Antony Sila</div><div class="mr">Data Science</div></div></div>
+        <div class="member"><div class="mav av3">DT</div><div><div class="mn">David Theuri</div><div class="mr">Data Science</div></div></div>
+        <div class="member"><div class="mav av4">SS</div><div><div class="mn">Shadrack Symekah</div><div class="mr">Data Science</div></div></div>
+        <div class="member"><div class="mav av5">JN</div><div><div class="mn">Joy Nyuguto</div><div class="mr">Data Science</div></div></div>
+        <div class="member"><div class="mav av6">MK</div><div><div class="mn">Martin Kitema</div><div class="mr">Data Science</div></div></div>
+      </div>
+    </div>
+
+    <!-- Tuned Model Metrics Card -->
+    <div class="metrics-card">
+      <div class="metrics-head"><h4>📊 Tuned Model Performance</h4><p>Optuna TPE · 30 trials · Full test set n = 6,432</p></div>
+      <div class="metrics-body">
+        <div class="metric-row">
+          <div class="metric-top"><span class="metric-label">Accuracy</span><span class="metric-val">95.9%</span></div>
+          <div class="metric-bw"><div class="metric-b" style="width:95.9%;background:var(--teal)"></div></div>
+          <div class="metric-sub">Correct predictions on held-out test set</div>
         </div>
-        <div class="members-lbl">Team Members</div>
-        <div class="member"><div class="member-av av1">CS</div><div><div class="member-name">Clare Simiyu</div><div class="member-role">Data Science</div></div></div>
-        <div class="member"><div class="member-av av2">AS</div><div><div class="member-name">Antony Sila</div><div class="member-role">Data Science</div></div></div>
-        <div class="member"><div class="member-av av3">DT</div><div><div class="member-name">David Theuri</div><div class="member-role">Data Science</div></div></div>
-        <div class="member"><div class="member-av av4">SS</div><div><div class="member-name">Shadrack Symekah</div><div class="member-role">Data Science</div></div></div>
-        <div class="member"><div class="member-av av5">JN</div><div><div class="member-name">Joy Nyuguto</div><div class="member-role">Data Science</div></div></div>
-        <div class="member"><div class="member-av av6">MK</div><div><div class="member-name">Martin Kitema</div><div class="member-role">Data Science</div></div></div>
+        <div class="metric-row">
+          <div class="metric-top"><span class="metric-label">Macro-AUC</span><span class="metric-val">0.9506</span></div>
+          <div class="metric-bw"><div class="metric-b" style="width:95.06%;background:#6366F1"></div></div>
+          <div class="metric-sub">Headline metric · cannot be inflated by majority class</div>
+        </div>
+        <div class="metric-row">
+          <div class="metric-top"><span class="metric-label">Macro-F1</span><span class="metric-val">0.5099</span></div>
+          <div class="metric-bw"><div class="metric-b" style="width:50.99%;background:var(--gold)"></div></div>
+          <div class="metric-sub">Balanced precision & recall across all 4 classes</div>
+        </div>
+        <div style="margin-top:12px;background:var(--tealXL);border:1px solid var(--tealL);border-radius:8px;padding:10px 12px">
+          <div style="font-size:10px;font-weight:700;color:var(--teal2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px">vs Untuned Baseline</div>
+          <div style="font-size:11.5px;color:var(--slate)">Accuracy <strong>+23.5pp</strong> · AUC <strong>+0.153</strong> · F1 <strong>+0.143</strong></div>
+          <div style="font-size:11px;color:var(--slateL);margin-top:3px">700 trees · lr 0.0106 · depth 10 · 70 leaves</div>
+        </div>
       </div>
     </div>
 
-    <!-- Model Info -->
     <div class="info-card">
-      <h4>⚡ Deployed Model</h4>
-      <div class="auc-highlight">
-        <span class="auc-num">0.804</span>
-        <span class="auc-lbl">Macro-AUC · Best in suite</span>
-      </div>
-      <div style="margin-top:12px">
-        <div class="info-row"><span class="info-key">Algorithm</span><span class="info-val teal">LightGBM</span></div>
-        <div class="info-row"><span class="info-key">Tuning</span><span class="info-val">Optuna TPE · 30 trials</span></div>
-        <div class="info-row"><span class="info-key">Training data</span><span class="info-val">59,820 rows</span></div>
-        <div class="info-row"><span class="info-key">Accuracy</span><span class="info-val">72.9%</span></div>
-        <div class="info-row"><span class="info-key">Bundle size</span><span class="info-val">5.6 MB</span></div>
-        <div class="info-row"><span class="info-key">Status</span><span class="info-val green">● Live</span></div>
-      </div>
+      <h4>⚙️ Deployed Model</h4>
+      <div class="irow"><span class="ik">Algorithm</span><span class="iv teal">LightGBM</span></div>
+      <div class="irow"><span class="ik">Tuning</span><span class="iv">Optuna TPE · 30 trials</span></div>
+      <div class="irow"><span class="ik">Trees</span><span class="iv">700</span></div>
+      <div class="irow"><span class="ik">Training rows</span><span class="iv">59,820</span></div>
+      <div class="irow"><span class="ik">Bundle size</span><span class="iv">5.6 MB</span></div>
+      <div class="irow"><span class="ik">Status</span><span class="iv green">● Live</span></div>
     </div>
 
-    <!-- Classes -->
-    <div class="info-card">
-      <h4>🎯 Prediction Classes</h4>
-      <div class="info-row"><span class="info-key">No method</span><span class="info-val">58.1% of sample</span></div>
-      <div class="info-row"><span class="info-key">Modern</span><span class="info-val">37.9% of sample</span></div>
-      <div class="info-row"><span class="info-key">Traditional</span><span class="info-val">3.8% of sample</span></div>
-      <div class="info-row"><span class="info-key">Folkloric</span><span class="info-val">0.2% of sample</span></div>
+    <div class="gap-card">
+      <div class="gap-head"><h4>📍 The 56-Point County Gap</h4><p>Modern use rate across key counties</p></div>
+      <div class="gap-body">
+        <div class="gi"><span class="gn" style="color:var(--teal)">Embu</span><div class="gbw"><div class="gb" style="width:57%;background:var(--teal)"></div></div><span class="gp" style="color:var(--teal)">57%</span></div>
+        <div class="gi"><span class="gn" style="color:var(--teal)">Kirinyaga</span><div class="gbw"><div class="gb" style="width:54.2%;background:var(--teal)"></div></div><span class="gp" style="color:var(--teal)">54%</span></div>
+        <div class="gi"><span class="gn" style="color:#818CF8">National</span><div class="gbw"><div class="gb" style="width:37.9%;background:#6366F1"></div></div><span class="gp" style="color:#818CF8">38%</span></div>
+        <div class="gi"><span class="gn" style="color:var(--gold)">Tana R.</span><div class="gbw"><div class="gb" style="width:20%;background:var(--gold)"></div></div><span class="gp" style="color:var(--gold)">20%</span></div>
+        <div class="gi"><span class="gn" style="color:var(--red)">Garissa</span><div class="gbw"><div class="gb" style="width:4.5%;background:var(--red)"></div></div><span class="gp" style="color:var(--red)">4.5%</span></div>
+        <div class="gi"><span class="gn" style="color:var(--red)">Wajir</span><div class="gbw"><div class="gb" style="width:2.8%;background:var(--red)"></div></div><span class="gp" style="color:var(--red)">2.8%</span></div>
+        <div class="gi"><span class="gn" style="color:var(--red)">Mandera</span><div class="gbw"><div class="gb" style="width:1.2%;background:var(--red)"></div></div><span class="gp" style="color:var(--red)">1.2%</span></div>
+        <p style="font-size:10.5px;color:var(--slateL);margin-top:10px;line-height:1.5">SHAP confirms the ASAL county barrier is independent of wealth, education, and religion.</p>
+      </div>
     </div>
-
   </div>
 </div>
 
-<!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
 <footer>
-  <p>
-    <strong>The Insight Architects</strong> &nbsp;·&nbsp; KDHS 2022 Contraceptive Use Prediction<br>
-    Clare Simiyu &nbsp;·&nbsp; Antony Sila &nbsp;·&nbsp; David Theuri &nbsp;·&nbsp;
-    Shadrack Symekah &nbsp;·&nbsp; Joy Nyuguto &nbsp;·&nbsp; Martin Kitema
-  </p>
+  <p><strong>The Insight Architects</strong> &nbsp;·&nbsp; KDHS 2022 Contraceptive Use Prediction<br>Clare Simiyu &nbsp;·&nbsp; Antony Sila &nbsp;·&nbsp; David Theuri &nbsp;·&nbsp; Shadrack Symekah &nbsp;·&nbsp; Joy Nyuguto &nbsp;·&nbsp; Martin Kitema</p>
 </footer>
 
 <script>
-  // County dropdown
-  const counties = [
-    "Mombasa","Kwale","Kilifi","Tana River","Lamu","Taita Taveta",
-    "Garissa","Wajir","Mandera","Marsabit","Isiolo","Meru","Tharaka-Nithi",
-    "Embu","Kitui","Machakos","Makueni","Nyandarua","Nyeri","Kirinyaga",
-    "Murang'a","Kiambu","Turkana","West Pokot","Samburu","Trans Nzoia",
-    "Uasin Gishu","Elgeyo Marakwet","Nandi","Baringo","Laikipia","Nakuru",
-    "Narok","Kajiado","Kericho","Bomet","Kakamega","Vihiga","Bungoma",
-    "Busia","Siaya","Kisumu","Homa Bay","Migori","Kisii","Nyamira","Nairobi"
-  ];
-  const sel = document.getElementById('county');
-  counties.forEach(c => {
-    const o = document.createElement('option');
-    o.value = c; o.textContent = c;
-    if (c === 'Turkana') o.selected = true;
-    sel.appendChild(o);
-  });
+const counties=["Mombasa","Kwale","Kilifi","Tana River","Lamu","Taita Taveta","Garissa","Wajir","Mandera","Marsabit","Isiolo","Meru","Tharaka-Nithi","Embu","Kitui","Machakos","Makueni","Nyandarua","Nyeri","Kirinyaga","Murang'a","Kiambu","Turkana","West Pokot","Samburu","Trans Nzoia","Uasin Gishu","Elgeyo Marakwet","Nandi","Baringo","Laikipia","Nakuru","Narok","Kajiado","Kericho","Bomet","Kakamega","Vihiga","Bungoma","Busia","Siaya","Kisumu","Homa Bay","Migori","Kisii","Nyamira","Nairobi"];
+const ASAL=new Set(["Turkana","West Pokot","Mandera","Wajir","Garissa","Marsabit","Samburu","Isiolo","Tana River"]);
+const HIGHC=new Set(["Embu","Kirinyaga","Murang'a","Kiambu","Nyeri","Meru"]);
+const CRATES={"Embu":57.0,"Kirinyaga":54.2,"Murang'a":52.1,"Kiambu":50.8,"Nyeri":49.6,"Meru":46.3,"Nairobi":44.2,"Nakuru":42.8,"Tana River":20.0,"Marsabit":8.2,"Garissa":4.5,"Wajir":2.8,"Mandera":1.2};
 
-  // Show/hide API key
-  document.getElementById('toggle-key').addEventListener('click', () => {
-    const inp = document.getElementById('api_key');
-    inp.type = inp.type === 'password' ? 'text' : 'password';
-  });
+const cSel=document.getElementById('county');
+counties.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;if(c==='Turkana')o.selected=true;cSel.appendChild(o);});
+document.getElementById('toggle-key').addEventListener('click',()=>{const i=document.getElementById('api_key');i.type=i.type==='password'?'text':'password';});
 
-  // Form submit
-  document.getElementById('form').addEventListener('submit', async e => {
-    e.preventDefault();
-    const btn   = document.getElementById('submitBtn');
-    const btnTxt= document.getElementById('btnTxt');
-    const res   = document.getElementById('result');
-    const errBox= document.getElementById('err-box');
-    const errMsg= document.getElementById('err-msg');
+document.getElementById('form').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=document.getElementById('submitBtn'),btnTxt=document.getElementById('btnTxt');
+  const res=document.getElementById('result'),errBox=document.getElementById('err-box'),errMsg=document.getElementById('err-msg');
+  res.style.display='none'; errBox.style.display='none';
+  btn.classList.add('loading'); btn.disabled=true;
+  btnTxt.innerHTML='<div class="spinner"></div>&nbsp; Analysing…';
+  const g=id=>document.getElementById(id).value;
+  const payload={age:+g('age'),age_group:g('age_group'),county:g('county'),residence_type:g('residence_type'),education_level:g('education_level'),religion:g('religion'),household_size:+g('household_size'),household_head_sex:g('household_head_sex'),wealth_index:g('wealth_index'),children_ever_born:+g('children_ever_born'),age_first_birth:+g('age_first_birth'),living_children:+g('living_children'),pregnancy_loss:g('pregnancy_loss'),marital_status:g('marital_status'),union_status:g('union_status'),partner_education:g('partner_education'),currently_working:g('currently_working')};
+  try{
+    const r=await fetch('/predict',{method:'POST',headers:{'Content-Type':'application/json','X-API-Key':g('api_key')},body:JSON.stringify(payload)});
+    const data=await r.json();
+    if(!r.ok){errMsg.textContent=data.error||'HTTP '+r.status;errBox.style.display='flex';return;}
+    renderResult(data,payload);
+  }catch(err){errMsg.textContent='Network error: '+err.message;errBox.style.display='flex';}
+  finally{btn.classList.remove('loading');btn.disabled=false;btnTxt.textContent='Get Prediction';}
+});
 
-    res.style.display = 'none';
-    errBox.style.display = 'none';
-    btn.classList.add('loading'); btn.disabled = true;
-    btnTxt.innerHTML = '<div class="spinner"></div>&nbsp; Analysing…';
+function renderResult(data,p){
+  const res=document.getElementById('result');
+  const probs=data.probabilities,pred=data.prediction,isRisk=data.risk_flag==='non_use_risk';
+  res.className=isRisk?'risk':'safe';
+  const modP=probs['Modern']||0,nmP=probs['No method']||0,trP=probs['Traditional']||0,flP=probs['Folkloric']||0;
+  const nonModP=nmP+trP+flP;
+  const conf=Math.max(...Object.values(probs))*100;
 
-    const g = id => document.getElementById(id).value;
-    const payload = {
-      age:                +g('age'),
-      age_group:           g('age_group'),
-      county:              g('county'),
-      residence_type:      g('residence_type'),
-      education_level:     g('education_level'),
-      religion:            g('religion'),
-      household_size:     +g('household_size'),
-      household_head_sex:  g('household_head_sex'),
-      wealth_index:        g('wealth_index'),
-      children_ever_born: +g('children_ever_born'),
-      age_first_birth:    +g('age_first_birth'),
-      living_children:    +g('living_children'),
-      pregnancy_loss:      g('pregnancy_loss'),
-      marital_status:      g('marital_status'),
-      union_status:        g('union_status'),
-      partner_education:   g('partner_education'),
-      currently_working:   g('currently_working'),
-    };
+  // Drivers
+  const driv=[],prot=[];
+  if(ASAL.has(p.county))driv.push('Arid / ASAL county');
+  if(HIGHC.has(p.county))prot.push('High-use county');
+  if(p.currently_working==='No')driv.push('Not employed');
+  if(p.currently_working==='Yes')prot.push('Currently employed');
+  if(p.wealth_index==='Poorest')driv.push('Poorest quintile');
+  if(['Richer','Richest'].includes(p.wealth_index))prot.push('Higher wealth');
+  if(p.union_status==='Currently in union')prot.push('In a union');
+  if(p.union_status==='Never in union')driv.push('Never in union');
+  if(p.education_level==='No education')driv.push('No education');
+  if(p.education_level==='Higher')prot.push('Higher education');
+  if(+p.living_children>=3)prot.push(`${p.living_children} living children`);
 
-    try {
-      const r = await fetch('/predict', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-API-Key': g('api_key') },
-        body: JSON.stringify(payload),
-      });
-      const data = await r.json();
-      if (!r.ok) { errMsg.textContent = data.error || 'HTTP ' + r.status; errBox.style.display = 'flex'; return; }
+  let html=`
+  <div class="r-header">
+    <div class="r-icon">${isRisk?'⚠️':'✅'}</div>
+    <div class="r-right">
+      <div class="r-pred">${pred}</div>
+      <div class="r-sub">Based on 17 sociodemographic factors · KDHS 2022 · LightGBM (Optuna-tuned)</div>
+      <span class="r-badge">${isRisk?'⚠ Non-use Risk':'✓ Modern Method User'}</span>
+    </div>
+  </div>
 
-      const isRisk = data.risk_flag === 'non_use_risk';
-      res.className = isRisk ? 'risk' : 'safe';
+  <!-- Model metric pills -->
+  <div class="r-metrics">
+    <div class="r-metric"><span class="rm-val">95.9%</span><span class="rm-lbl">Model Accuracy</span></div>
+    <div class="r-metric"><span class="rm-val">0.9506</span><span class="rm-lbl">Macro-AUC</span></div>
+    <div class="r-metric"><span class="rm-val">0.5099</span><span class="rm-lbl">Macro-F1</span></div>
+    <div class="r-metric"><span class="rm-val">${conf.toFixed(0)}%</span><span class="rm-lbl">This Prediction</span></div>
+  </div>
 
-      const sorted = Object.entries(data.probabilities).sort((a,b) => b[1]-a[1]);
-      const icon   = isRisk ? '⚠️' : '✅';
-      const flag   = isRisk ? '⚠ Non-use Risk' : '✓ Using a Method';
+  <!-- Primary groups -->
+  <div class="glbl">Method Group</div>
+  <div class="pg mod" style="${isRisk?'opacity:.52':''}">
+    <div><div class="pg-name">✅ Modern Method</div><div class="pg-desc">Pills · Injection · Implant · IUD · Condom · Sterilisation</div></div>
+    <div class="pg-pct">${(modP*100).toFixed(1)}%</div>
+  </div>
+  <div class="pg nmod" style="${!isRisk?'opacity:.52':''}">
+    <div><div class="pg-name">⚠ Not Using Modern</div><div class="pg-desc">No method · Traditional · Folkloric combined</div></div>
+    <div class="pg-pct">${(nonModP*100).toFixed(1)}%</div>
+  </div>
 
-      res.innerHTML = `
-        <div class="result-top">
-          <div><div class="result-prediction">${icon} ${data.prediction}</div></div>
-          <span class="result-badge">${flag}</span>
-        </div>
-        <div class="prob-grid">
-          ${sorted.map(([cls,p]) => `
-            <div class="prob-item">
-              <div class="prob-cls">${cls}</div>
-              <div class="prob-pct">${(p*100).toFixed(1)}%</div>
-              <div class="bar-bg"><div class="bar-fg" style="width:${(p*100).toFixed(1)}%"></div></div>
-            </div>`).join('')}
-        </div>`;
-      res.style.display = 'block';
-    } catch(err) {
-      errMsg.textContent = 'Network error: ' + err.message;
-      errBox.style.display = 'flex';
-    } finally {
-      btn.classList.remove('loading'); btn.disabled = false;
-      btnTxt.textContent = 'Get Prediction';
-    }
-  });
+  <!-- Four-class breakdown -->
+  <div class="glbl" style="margin-top:14px">All Four Classes</div>
+  <div class="sub-cls">`;
+
+  [{n:'No method',p:nmP,d:'#DC2626'},{n:'Modern',p:modP,d:'#0D9488'},{n:'Traditional',p:trP,d:'#7C3AED'},{n:'Folkloric',p:flP,d:'#D97706'}]
+    .sort((a,b)=>b.p-a.p).forEach(({n,p:pp,d})=>{
+      html+=`<div class="si"><div class="si-dot" style="background:${d}"></div><div class="si-name">${n}</div><div class="si-bw"><div class="si-b" style="width:${(pp*100).toFixed(1)}%;background:${d}"></div></div><div class="si-pct">${(pp*100).toFixed(1)}%</div></div>`;
+    });
+
+  html+=`</div>`;
+
+  // Drivers
+  if(driv.length||prot.length){
+    html+=`<div class="drivers"><div class="drivers-title">Key Factors Detected in This Profile</div>`;
+    driv.forEach(d=>{html+=`<span class="chip r">⚠ ${d}</span>`;});
+    prot.forEach(pp=>{html+=`<span class="chip g">✓ ${pp}</span>`;});
+    html+=`</div>`;
+  }
+
+  // Insights
+  const ins=genInsights(data,p,isRisk,conf);
+  html+=`<div class="ins-block"><div class="ins-block-title">💡 What This Means</div>`;
+  ins.forEach(i=>{html+=`<div class="ins-item"><div class="ins-bul"></div><div class="ins-txt">${i}</div></div>`;});
+  html+=`</div>`;
+
+  res.innerHTML=html; res.style.display='block';
+}
+
+function genInsights(data,p,isRisk,conf){
+  const ins=[],probs=data.probabilities;
+  const modP=(probs['Modern']||0)*100,nmP=(probs['No method']||0)*100;
+
+  // Confidence
+  if(conf>80) ins.push(`The model is <strong>${conf.toFixed(0)}% confident</strong> in this prediction — a strong signal across 17 input factors. The tuned model achieves 95.9% accuracy overall.`);
+  else if(conf>55) ins.push(`The model shows <strong>moderate confidence (${conf.toFixed(0)}%)</strong>. This respondent sits at the boundary between use and non-use — a profile worth prioritising for field assessment.`);
+  else ins.push(`The model shows <strong>uncertainty (${conf.toFixed(0)}%)</strong>. This profile genuinely resembles both modern users and non-users — additional field information recommended.`);
+
+  // Geography
+  if(ASAL.has(p.county)){
+    const rate=CRATES[p.county];
+    ins.push(`<strong>${p.county}</strong> is an arid/ASAL county with a ${rate?rate+'%':''} modern use rate — among Kenya's lowest. The SHAP analysis confirms this geographic barrier is independent of wealth, education, and religion. Clinic access and commodity supply chains are the primary interventions needed here.`);
+  }else if(HIGHC.has(p.county)){
+    const rate=CRATES[p.county];
+    ins.push(`<strong>${p.county}</strong> is one of Kenya's highest-performing counties for modern contraceptive use${rate?' ('+rate+'% modern use rate)':''}. Strong health infrastructure and high education levels support uptake in this region.`);
+  }
+
+  // Employment
+  if(p.currently_working==='No'&&isRisk) ins.push(`<strong>Not being employed</strong> is the 3rd strongest SHAP predictor of non-use. Employment unlocks access, agency, and information networks. This is the most actionable top-5 risk factor — economic empowerment programmes and FP outreach should be linked.`);
+  else if(p.currently_working==='Yes') ins.push(`Being <strong>currently employed</strong> is a significant protective factor (3rd highest global SHAP importance). Economic participation is strongly linked to modern contraceptive uptake in the KDHS 2022 data.`);
+
+  // Wealth
+  if(p.wealth_index==='Poorest') ins.push(`The <strong>Poorest wealth quintile</strong> has a 25% modern use rate nationally — the steepest wealth cliff is Poorest → Poorer (+16 percentage points to 41%). Targeted commodity subsidies at this wealth level deliver the highest return per shilling spent.`);
+
+  // Union
+  if(p.union_status==='Currently in union'&&!isRisk) ins.push(`Being <strong>currently in a union</strong> is the single clearest enabler of modern use in our SHAP analysis. It connects directly to pregnancy exposure and motivation to adopt contraception.`);
+  else if(p.union_status==='Never in union'&&nmP>50) ins.push(`This respondent has <strong>never been in a union</strong>. High predicted non-use may reflect low pregnancy exposure rather than a genuine access barrier — this profile may not represent unmet need requiring outreach.`);
+
+  // Children
+  if(+p.living_children>=3) ins.push(`With <strong>${p.living_children} living children</strong>, this respondent has a strong fertility-history signal. KDHS data confirms that women adopt contraception after having children — high parity is a key predictor of modern method uptake.`);
+  else if(+p.living_children===0&&+p.age<25) ins.push(`A <strong>young woman with no children</strong> scoring high on non-use may be in a low pregnancy-exposure phase — not necessarily facing an access barrier. Consider union status and age together before flagging for outreach.`);
+
+  return ins.slice(0,4);
+}
 </script>
 </body>
 </html>
