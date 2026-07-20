@@ -11,10 +11,8 @@
 *.pptx
 
 # Exception: allow presentation files
-!Predicting_Contraceptive_Use_Presentation.pdf
-!Predicting_Contraceptive_Use_Presentation_Updated.pptx
-!Presentation_Deck (1).pdf
-!KDHS_2022_Capstone_Deck.pptx
+!KDHS_2022_Capstone_The Insights Architects.pdf
+!KDHS_2022_Capstone_The Insights Architects.pptx
 
 # Jupyter Checkpoints
 .ipynb_checkpoints/
