@@ -11,8 +11,8 @@
 *.pptx
 
 # Exception: allow presentation files
-!KDHS_2022_Capstone_The Insights Architects.pdf
-!KDHS_2022_Capstone_The Insights Architects.pptx
+!KDHS_2022_Capstone_The_Insights_Architects_Restyled.pdf
+!KDHS_2022_Capstone_The_Insights_Architects_Restyled.pptx
 
 # Jupyter Checkpoints
 .ipynb_checkpoints/
